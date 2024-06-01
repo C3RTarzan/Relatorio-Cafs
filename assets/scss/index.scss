@@ -66,14 +66,13 @@ body {
                     border: solid 1px $dark1;
                     border-radius: 5px;
                     margin: 2px;
-                    flex-direction: column;
+                    flex-direction: row;
+                    flex-wrap: wrap;
                     justify-content: center;
                     align-items: center;
                     padding: 5px 10px;
-                    width: min-content;
-                    height: min-content;
                     .mainBox{
-                        padding: 10px 0;
+                        padding: 10px 5px; 
                         justify-content: center;
                         align-items: center;
                         flex-direction: row;
@@ -116,7 +115,6 @@ body {
                     flex-wrap: wrap;
                     flex-direction: row;
                     gap: 5px;
-                    border: none;
                     .mainBox{
                     }
                 }
@@ -255,7 +253,7 @@ body {
             align-items: center;
             flex-direction: column;
             .table{
-                width: 90%;
+                width: 100%;
                 height: auto;
                 padding: 20px 10px;
                 margin: 10px 0;
@@ -284,16 +282,14 @@ body {
                     background-color: white;
                     padding: 10px 0px;
                     flex-direction: column;
+                    //padding: 5px;
                     .driver{
                         flex-direction: column;
                         width: 100%;
-                        .driverName{
-                            border-bottom: solid 1px $dark1; 
-                            //border-left: solid 1px $dark1; 
-                            border-top: solid 1px $dark1; 
+                        .driverName{    
+                            border: solid 1px $dark1; 
                             margin: 1px 0;
-                            font-size: 20px;
-                            letter-spacing: 2px;
+                            font-size: 16px;
                             padding: 5px;
                         }
                         .caf{
@@ -302,12 +298,9 @@ body {
                             width: 100%;
                             position: relative;
                             .driverCaf{
-                                border-bottom: solid 1px $dark1;
-                                border-left: solid 1px $dark1; 
-                                border-top: solid 1px $dark1; 
+                                border: solid 1px $dark1;
                                 margin: 1px 0;
-                                font-size: 18px;
-                                letter-spacing: 2px;
+                                font-size: 14px;
                                 padding: 5px;
                             }
                             .router{
@@ -315,14 +308,11 @@ body {
                                 flex-direction: column;
                                 width: 100%;
                                 .driverRouter{
-                                    border-bottom: solid 1px $dark1;
-                                    border-left: solid 1px $dark1; 
-                                    border-top: solid 1px $dark1; 
+                                    border: solid 1px $dark1;
                                     margin: 1px 0;
                                     width: 100%;
-                                    font-size: 16px;
-                                    letter-spacing: 2px;
-                                    padding: 5px;
+                                    font-size: 12px;    
+                                  padding: 5px;
                                 }
                             }
                         }
@@ -330,21 +320,21 @@ body {
                     .QTD{
                         color: #1523b8;
                         font-weight: 600;
-                        float: right;
-                        font-size: 16px;
-                    }
-                    .QTD2{
-                        opacity: .6;
                         font-size: 14px;
-                    }
+                        margin: 0 5px;                    }
                     .QTD3{
                         color: #040b57;
                         font-weight: 800;
-                        font-size: 20px;
+                        font-size: 16px;
                     }
-                    .userId{
-                        color: rgb(88, 0, 105);
+                    .routerCaf{
+                        color: rgb(0, 75, 10);
                         font-weight: 600;
+                        font-size: 12px;
+                        margin: 0 5px;
+                        background-color: rgba(0, 0, 0, .1);
+                        padding: 2px 5px;
+                        border-radius: 3px;
                     }
                     .icon{
                         position: absolute;

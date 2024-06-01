@@ -175,15 +175,14 @@ body .input .selection .boxSelection .checkbox {
   border: solid 1px #36393f;
   border-radius: 5px;
   margin: 2px;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   padding: 5px 10px;
-  width: min-content;
-  height: min-content;
 }
 body .input .selection .boxSelection .checkbox .mainBox {
-  padding: 10px 0;
+  padding: 10px 5px;
   justify-content: center;
   align-items: center;
   flex-direction: row;
@@ -224,7 +223,6 @@ body .input .selection .boxSelectionMt .checkbox {
   flex-wrap: wrap;
   flex-direction: row;
   gap: 5px;
-  border: none;
 }
 body .input .button {
   position: relative;
@@ -351,7 +349,7 @@ body .output .TableWitData {
   flex-direction: column;
 }
 body .output .TableWitData .table {
-  width: 90%;
+  width: 100%;
   height: auto;
   padding: 20px 10px;
   margin: 10px 0;
@@ -387,11 +385,9 @@ body .output .TableWitData .table .sec .driver {
   width: 100%;
 }
 body .output .TableWitData .table .sec .driver .driverName {
-  border-bottom: solid 1px #36393f;
-  border-top: solid 1px #36393f;
+  border: solid 1px #36393f;
   margin: 1px 0;
-  font-size: 20px;
-  letter-spacing: 2px;
+  font-size: 16px;
   padding: 5px;
 }
 body .output .TableWitData .table .sec .driver .caf {
@@ -401,12 +397,9 @@ body .output .TableWitData .table .sec .driver .caf {
   position: relative;
 }
 body .output .TableWitData .table .sec .driver .caf .driverCaf {
-  border-bottom: solid 1px #36393f;
-  border-left: solid 1px #36393f;
-  border-top: solid 1px #36393f;
+  border: solid 1px #36393f;
   margin: 1px 0;
-  font-size: 18px;
-  letter-spacing: 2px;
+  font-size: 14px;
   padding: 5px;
 }
 body .output .TableWitData .table .sec .driver .caf .router {
@@ -415,33 +408,31 @@ body .output .TableWitData .table .sec .driver .caf .router {
   width: 100%;
 }
 body .output .TableWitData .table .sec .driver .caf .router .driverRouter {
-  border-bottom: solid 1px #36393f;
-  border-left: solid 1px #36393f;
-  border-top: solid 1px #36393f;
+  border: solid 1px #36393f;
   margin: 1px 0;
   width: 100%;
-  font-size: 16px;
-  letter-spacing: 2px;
+  font-size: 12px;
   padding: 5px;
 }
 body .output .TableWitData .table .sec .QTD {
   color: #1523b8;
   font-weight: 600;
-  float: right;
-  font-size: 16px;
-}
-body .output .TableWitData .table .sec .QTD2 {
-  opacity: 0.6;
   font-size: 14px;
+  margin: 0 5px;
 }
 body .output .TableWitData .table .sec .QTD3 {
   color: #040b57;
   font-weight: 800;
-  font-size: 20px;
+  font-size: 16px;
 }
-body .output .TableWitData .table .sec .userId {
-  color: rgb(88, 0, 105);
+body .output .TableWitData .table .sec .routerCaf {
+  color: rgb(0, 75, 10);
   font-weight: 600;
+  font-size: 12px;
+  margin: 0 5px;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 2px 5px;
+  border-radius: 3px;
 }
 body .output .TableWitData .table .sec .icon {
   position: absolute;

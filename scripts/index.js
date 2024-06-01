@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     getUser();
+    handleBoxClicks();
 });
 
 function getData() {
@@ -23,11 +24,37 @@ function getData() {
     }
 
     const driverCounts = countDriverNames(items);
+    
     const groupedByName = groupCafsAndRoutersByName(items);
+    categorizeDrivers(groupedByName)
+    const localGroupedByName = checkAndRemoveDrivers({ ...groupedByName });
+    
 
-    console.log(groupedByName);
+    renderDataToHtml(driverCounts, localGroupedByName);
+}
 
-    renderDataToHtml(driverCounts, groupedByName, items);
+function checkAndRemoveDrivers(dados) {
+    for (const driverName in dados) {
+        const routers = dados[driverName];
+        let shouldRemove = false;
+        for (const cafID in routers) {
+            const routerKeys = Object.keys(routers[cafID]);
+            for (const routerKey of routerKeys) {
+                const firstLetter = routerKey.charAt(0).toUpperCase();
+                if (firstLetter === 'W' || firstLetter === 'L' || firstLetter === 'V' || firstLetter === 'S' || firstLetter === 'Q' || firstLetter === 'N') {
+                    shouldRemove = true;
+                    break;
+                }
+            }
+            if (shouldRemove) {
+                break;
+            }
+        }
+        if (shouldRemove) {
+            delete dados[driverName];
+        }
+    }
+    return dados;
 }
 function countDriverNames(items) {
     const driverCounts = {};
@@ -40,6 +67,7 @@ function countDriverNames(items) {
     });
 
     return driverCounts;
+
 }
 function sortObjectByKey(obj) {
     return Object.keys(obj)
@@ -49,6 +77,59 @@ function sortObjectByKey(obj) {
             return result;
         }, {});
 }
+function categorizeDrivers(data) {
+    // Define the categories
+    const metropolitanas = ["EUS", "AQU", "HOR", "PCJ", "ITA", "MRC", "MA1", "MA2", "MR1", "MR2", "CA1", "CA2", "PCT"];
+    const interior = ["S", "V", "W", "L", "Q", "N"];
+
+    // Initialize count variables for each category
+    let metropolitanasCount = 0;
+    let interiorCount = 0;
+    let localCount = 0;
+    
+    // Initialize count variables for CAFs in each category
+    let metropolitanasCountCaf = 0;
+    let interiorCountCaf = 0;
+    let localCountCaf = 0;
+
+    // Loop through the data object
+    for (const driverName in data) {
+        const driverData = data[driverName];
+        // Initialize sets for unique CAFs for each driver
+        const driverCafs = new Set();
+        for (const cafID in driverData) {
+            driverCafs.add(cafID);
+            const seenRouters = new Set();
+            for (const router in driverData[cafID]) {
+                if (!seenRouters.has(router)) {
+                    const category = router.substring(0, 3);
+                    if (metropolitanas.includes(category)) {
+                        metropolitanasCount += driverData[cafID][router];
+                        metropolitanasCountCaf++;
+                    } else if (interior.some(prefix => router.startsWith(prefix))) {
+                        interiorCount += driverData[cafID][router];
+                        interiorCountCaf++;
+                    } else {
+                        localCount += driverData[cafID][router];
+                        localCountCaf++;
+                    }
+                    seenRouters.add(router);
+                }
+            }
+        }
+    }
+
+    // Update DOM elements with counts
+    document.querySelector(".locCaf").value = localCountCaf;
+    document.querySelector(".metCaf").value = metropolitanasCountCaf;
+    document.querySelector(".intCaf").value = interiorCountCaf;
+    document.querySelector(".locRout").value = localCount;
+    document.querySelector(".metRout").value = metropolitanasCount;
+    document.querySelector(".intRout").value = interiorCount;
+}
+
+
+
 function groupCafsAndRoutersByName(items) {
     const groupedByName = {};
 
@@ -82,12 +163,11 @@ function groupCafsAndRoutersByName(items) {
 }
 function processData(collections) {
     return collections.map(line => {
-        const [userID, router, cafID, driverName] = line.split('\t');
-        return { userID, router, cafID, driverName };
+        const [router, cafID, driverName] = line.split('\t');
+        return {router, cafID, driverName };
     });
 }
-function renderDataToHtml(driverCounts, groupedByName, items) {
-    console.log(items);
+function renderDataToHtml(driverCounts, groupedByName) {
     const secElement = document.querySelector(".sec");
     secElement.innerHTML = ''; // Limpar qualquer conteúdo existente
 
@@ -113,41 +193,24 @@ function renderDataToHtml(driverCounts, groupedByName, items) {
             const cafCount = Object.values(cafs[caf]).reduce((a, b) => a + b, 0);
             const cafSpan = document.createElement("span");
             cafSpan.classList.add("driverCaf");
-            cafSpan.innerHTML = `CAF: ${caf} <span class="QTD"> | QTD: ${cafCount} |</span>`;
+            cafSpan.innerHTML = `CAF: ${caf} <span class="QTD"> | TOTAL: ${cafCount} |</span>`;
 
-            // Encontrar o userId correspondente ao caf atual
-            const userId = items.find(item => item.cafID === caf)?.userID;
-            if (userId) {
-                const userIdSpan = document.createElement("span");
-                userIdSpan.classList.add("userId");
-                userIdSpan.innerHTML = ` | ID: ${userId} | `;
-                cafSpan.appendChild(userIdSpan);
-            }
-
-            cafSpan.innerHTML += `<iconify-icon class="icon iconOpen" icon="mdi:checkbox-blank-outline"></iconify-icon>`;
-            cafDiv.appendChild(cafSpan);
-
+            // Adicionando os routers
             const routers = cafs[caf];
-
             for (const router in routers) {
-                const routerDiv = document.createElement("div");
-                routerDiv.classList.add("router");
-
                 const routerSpan = document.createElement("span");
-                routerSpan.classList.add("driverRouter");
-                routerSpan.innerHTML = `${router} <span class="QTD QTD2"> | QTD: ${routers[router]} |</span>`;
-                routerDiv.appendChild(routerSpan);
-
-                cafDiv.appendChild(routerDiv);
+                routerSpan.classList.add("routerCaf");
+                routerSpan.innerHTML = `${router} : ${routers[router]}`;
+                cafSpan.appendChild(routerSpan);
             }
 
+            cafDiv.appendChild(cafSpan);
             driverDiv.appendChild(cafDiv);
         }
 
         secElement.appendChild(driverDiv);
     });
 
-    // Atualizar a seção de rodapé
     const cafInput = document.querySelector(".cafsCount");
     const cardsInput = document.querySelector(".cardsCount");
 
@@ -167,15 +230,28 @@ function renderDataToHtml(driverCounts, groupedByName, items) {
     cafInput.value = totalCafs;
     cardsInput.value = totalRouters;
 
-    generateImage()
+    generateImage();
 }
 function generateImage() {
     const content = document.querySelector('.sec');
-    domtoimage.toPng(content)
+    const scale = 3;  // Ajuste a escala conforme necessário para melhorar a qualidade
+
+    const options = {
+        width: content.offsetWidth * scale,
+        height: content.offsetHeight * scale,
+        style: {
+            transform: `scale(${scale})`,
+            transformOrigin: 'top left'
+        }
+    };
+
+    domtoimage.toPng(content, options)
         .then(function (dataUrl) {
             // Cria uma nova imagem e define o URL da imagem como a imagem capturada
             const image = new Image();
             image.src = dataUrl;
+            image.style.width = `${content.offsetWidth}px`;
+            image.style.height = `${content.offsetHeight}px`;
 
             // Substitui completamente o conteúdo pelo elemento da imagem
             content.innerHTML = '';
@@ -185,12 +261,6 @@ function generateImage() {
             console.error('Ocorreu um erro ao gerar a imagem:', error);
         });
 }
-
-
-
-
-
-
 function configOpen() {
     
 }
@@ -297,3 +367,34 @@ function copy() {
             console.error('Erro ao copiar o texto:', err);
         });
 }
+function handleBoxClicks() {
+    const mainBoxes = document.querySelectorAll('.mainBox');
+
+    if (mainBoxes.length === 0) {
+        console.error("No .mainBox elements found!");
+        return;
+    }
+
+    mainBoxes.forEach(mainBox => {
+        const icon = mainBox.querySelector('.icon.iconOpen');
+
+        if (!icon) {
+            console.error("Icon with class .icon.iconOpen not found inside .mainBox!");
+            return;
+        }
+
+        // Initialize the icon display to ensure a known value
+        icon.style.display = 'none';
+
+        mainBox.addEventListener('click', () => {
+            console.log("Hi, you clicked on a mainBox!");
+
+            if (icon.style.display === 'flex') {
+                icon.style.display = 'none';
+            } else {
+                icon.style.display = 'flex';
+            }
+        });
+    });
+}
+
