@@ -276,75 +276,102 @@ body {
                         font-weight: 600;
                     }
                 }
-                .sec{
+                .sec {
                     width: 80%;
                     border: solid 1px $dark1;
                     background-color: white;
                     padding: 10px 0px;
-                    flex-direction: column;
-                    //padding: 5px;
-                    .driver{
+                    flex-direction: row;
+                    .leftBox {
+                        padding: 2px 5px;
+                        width: 50%;
+                        height: 100%;
+                        flex-direction: column;
+                        align-items: center;
+                        border-right: solid 1px $dark1;
+                    }
+                    .rightBox {
+                        padding: 2px 5px;
+                        width: 50%;
+                        height: 100%;
+                        flex-direction: column;
+                        align-items: center;
+                        border-left: solid 1px $dark1;
+                    }
+                    .driver {
                         flex-direction: column;
                         width: 100%;
-                        .driverName{    
+                        justify-content: center;
+                        align-items: center;
+                        text-align: center;
+                        .driverName {  
+                            width: 80%;  
+                            height: auto;
+                            justify-content: center;
                             border: solid 1px $dark1; 
-                            margin: 1px 0;
-                            font-size: 16px;
-                            padding: 5px;
-                        }
-                        .caf{
-                            padding-left: 30px;
-                            flex-direction: column;
-                            width: 100%;
-                            position: relative;
-                            .driverCaf{
-                                border: solid 1px $dark1;
-                                margin: 1px 0;
-                                font-size: 14px;
-                                padding: 5px;
+                            border-radius: 3px;
+                            font-size: 14px;
+                            font-weight: 600;
+                            padding: 5px 10px;
+                            margin-top: 5px;
+                            align-items: center;   
+                            line-height: 6px; 
+                            span:nth-child(2){
+                                border-left: solid 1.5px $dark1;
+                                border-right: solid 1.5px $dark1;
+                                padding: 5px 3px;
                             }
-                            .router{
+                            > * {
+                                flex: 0 0 max-content;
+                            }
+                        }
+                        .caf {
+                            flex-direction: column;
+                            width: 80%;
+                            .driverCaf {
+                                font-size: 12px;
+                                padding-top: 5px;
+                                .valueCaf{
+                                    font-weight: 600;
+                                }
+                            }
+                            .router {
                                 padding-left: 30px;
                                 flex-direction: column;
                                 width: 100%;
-                                .driverRouter{
+                                .driverRouter {
                                     border: solid 1px $dark1;
                                     margin: 1px 0;
                                     width: 100%;
-                                    font-size: 12px;    
-                                  padding: 5px;
+                                    font-size: 8px;    
+                                    padding: 5px;
                                 }
                             }
                         }
                     }
-                    .QTD{
+                    .QTD {
                         color: #1523b8;
-                        font-weight: 600;
-                        font-size: 14px;
-                        margin: 0 5px;                    }
-                    .QTD3{
-                        color: #040b57;
-                        font-weight: 800;
-                        font-size: 16px;
-                    }
-                    .routerCaf{
-                        color: rgb(0, 75, 10);
                         font-weight: 600;
                         font-size: 12px;
                         margin: 0 5px;
+                    }
+                    .QTD3 {
+                        color: #040b57;
+                        font-weight: 800;
+                        font-size: 12px;
+                    }
+                    .routerCaf {
+                        color: rgb(0, 75, 10);
+                        font-weight: 600;
+                        width: auto;
+                        font-size: 12px;
+                        margin: 2px;
                         background-color: rgba(0, 0, 0, .1);
                         padding: 2px 5px;
                         border-radius: 3px;
-                    }
-                    .icon{
-                        position: absolute;
-                        top: 0px;
-                        right: 130px;
-                        font-size: 35px;
-                        color: $corspan;
+                        display: inline-block; /* Adicionado para evitar quebras dentro do elemento */
                     }
                 }
-
                 .footer{
                     justify-content: space-around;
                     width: 80%;
@@ -372,6 +399,69 @@ body {
                             color: $dark3;
                             font-size: 18px;
                             background-color: rgba(255,255,255,.0);
+                        }
+                    }
+                }
+                .buttonDn{
+                    position: relative;
+                    width: 100%;
+                    padding: 10px;
+                    height: auto;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    button{
+                        width: 150px;
+                        border: none;
+                        background-color: $corverde;
+                        padding: 10px 20px;
+                        color: $corspan;
+                        font-size: 18px;
+                        font-weight: 600;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        margin-bottom: 20px;
+                        &:hover{
+                            opacity: .8;
+                        }
+                        &:disabled{
+                            cursor: default;
+                            background-color: rgb(32, 32, 32);
+                            &:hover{
+                                opacity: 1;
+                            }
+                        }
+                    } 
+                    .buttonsole{
+                        margin-bottom: 10px;
+                        width: 200px;
+                    }
+                    input{
+                        text-align: center;
+                    }
+                    
+                    .collectSelectName{
+                        appearance: none;
+                        height: 25px;
+                        margin-bottom: 10px;
+                        width: 150px;
+                        text-align: center;
+                        background-color: white;
+                        border: none;
+                        border-radius: 3px;
+                        cursor: pointer;
+                        option{
+                        }
+                    }
+                    .icon{
+                        position: absolute;
+                        top: 0px;
+                        left: 0px;
+                        font-size: 30px;
+                        color: $corspan;
+                        cursor: pointer;
+                        &:hover{
+                            opacity: .8;
                         }
                     }
                 }
@@ -529,3 +619,4 @@ body {
         }
     }
 }
+

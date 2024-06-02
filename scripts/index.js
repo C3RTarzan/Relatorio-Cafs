@@ -32,7 +32,6 @@ function getData() {
 
     renderDataToHtml(driverCounts, localGroupedByName);
 }
-
 function checkAndRemoveDrivers(dados) {
     for (const driverName in dados) {
         const routers = dados[driverName];
@@ -127,9 +126,6 @@ function categorizeDrivers(data) {
     document.querySelector(".metRout").value = metropolitanasCount;
     document.querySelector(".intRout").value = interiorCount;
 }
-
-
-
 function groupCafsAndRoutersByName(items) {
     const groupedByName = {};
 
@@ -169,47 +165,65 @@ function processData(collections) {
 }
 function renderDataToHtml(driverCounts, groupedByName) {
     const secElement = document.querySelector(".sec");
-    secElement.innerHTML = ''; // Limpar qualquer conteúdo existente
+    const leftBox = document.querySelector(".leftBox");
+    const rightBox = document.querySelector(".rightBox");
+
+    // Limpar qualquer conteúdo existente
+    leftBox.innerHTML = '';
+    rightBox.innerHTML = '';
 
     // Ordenar os motoristas alfabeticamente
     const sortedDrivers = Object.keys(groupedByName).sort();
 
-    // Iterar sobre os motoristas ordenados
-    sortedDrivers.forEach(driverName => {
-        const driverDiv = document.createElement("div");
-        driverDiv.classList.add("driver");
+    // Dividir os motoristas entre as caixas esquerda e direita
+    const middleIndex = Math.ceil(sortedDrivers.length / 2);
+    const leftDrivers = sortedDrivers.slice(0, middleIndex);
+    const rightDrivers = sortedDrivers.slice(middleIndex);
 
-        const driverNameSpan = document.createElement("span");
-        driverNameSpan.classList.add("driverName");
-        driverNameSpan.innerHTML = `${driverName} <span class="QTD QTD3"> | QTD: ${driverCounts[driverName] || 0} | </span>`;
-        driverDiv.appendChild(driverNameSpan);
+    function renderDrivers(drivers, container) {
+        drivers.forEach(driverName => {
+            const driverDiv = document.createElement("div");
+            driverDiv.classList.add("driver");
 
-        const cafs = groupedByName[driverName];
+            const driverNameSpan = document.createElement("div");
+            driverNameSpan.classList.add("driverName");
+            driverNameSpan.innerHTML = `<span>${driverName}</span><span class="QTD QTD3">QTD:${driverCounts[driverName] || 0}</span>`
+            //driverNameSpan.innerHTML = `${driverName} <span class="QTD QTD3"> |QTD:${driverCounts[driverName] || 0}| </span>`;
+            driverDiv.appendChild(driverNameSpan);
 
-        for (const caf in cafs) {
-            const cafDiv = document.createElement("div");
-            cafDiv.classList.add("caf");
+            const cafs = groupedByName[driverName];
 
-            const cafCount = Object.values(cafs[caf]).reduce((a, b) => a + b, 0);
-            const cafSpan = document.createElement("span");
-            cafSpan.classList.add("driverCaf");
-            cafSpan.innerHTML = `CAF: ${caf} <span class="QTD"> | TOTAL: ${cafCount} |</span>`;
+            for (const caf in cafs) {
+                const cafDiv = document.createElement("div");
+                cafDiv.classList.add("caf");
 
-            // Adicionando os routers
-            const routers = cafs[caf];
-            for (const router in routers) {
-                const routerSpan = document.createElement("span");
-                routerSpan.classList.add("routerCaf");
-                routerSpan.innerHTML = `${router} : ${routers[router]}`;
-                cafSpan.appendChild(routerSpan);
+                const cafCount = Object.values(cafs[caf]).reduce((a, b) => a + b, 0);
+                const cafSpan = document.createElement("span");
+                cafSpan.classList.add("driverCaf");
+                cafSpan.innerHTML = `CAF: <span class="valueCaf">${caf}</span> <span class="QTD"> | TOTAL: ${cafCount} |</span>`;
+
+                // Adicionando os routers
+                const routers = cafs[caf];
+                for (const router in routers) {
+                    const routerSpan = document.createElement("span");
+                    routerSpan.classList.add("routerCaf");
+                    routerSpan.innerHTML = `${router}:${routers[router]}`;
+                    cafSpan.appendChild(routerSpan);
+                }
+
+                cafDiv.appendChild(cafSpan);
+                driverDiv.appendChild(cafDiv);
             }
 
-            cafDiv.appendChild(cafSpan);
-            driverDiv.appendChild(cafDiv);
-        }
+            container.appendChild(driverDiv);
+        });
+    }
 
-        secElement.appendChild(driverDiv);
-    });
+    // Renderizar motoristas na caixa da esquerda
+    renderDrivers(leftDrivers, leftBox);
+
+    // Renderizar motoristas na caixa da direita
+    renderDrivers(rightDrivers, rightBox);
 
     const cafInput = document.querySelector(".cafsCount");
     const cardsInput = document.querySelector(".cardsCount");
@@ -232,35 +246,48 @@ function renderDataToHtml(driverCounts, groupedByName) {
 
     generateImage();
 }
+
 function generateImage() {
     const content = document.querySelector('.sec');
-    const scale = 3;  // Ajuste a escala conforme necessário para melhorar a qualidade
+    const scale = 4;  // Ajuste a escala conforme necessário para melhorar a qualidade
+    const a4Width = 794;  // Largura da folha A4 em pixels a 96 DPI
+    const a4Height = 1123;  // Altura da folha A4 em pixels a 96 DPI
+
+    // Ajustar o tamanho do conteúdo para caber em uma folha A4
+    const contentWidth = content.offsetWidth;
+    const contentHeight = content.offsetHeight;
+    const widthRatio = a4Width / contentWidth;
+    const heightRatio = a4Height / contentHeight;
+    const fitScale = Math.min(widthRatio, heightRatio);
 
     const options = {
-        width: content.offsetWidth * scale,
-        height: content.offsetHeight * scale,
+        width: contentWidth * fitScale * scale,
+        height: contentHeight * fitScale * scale,
         style: {
-            transform: `scale(${scale})`,
-            transformOrigin: 'top left'
+            transform: `scale(${fitScale * scale})`,
+            transformOrigin: 'top left',
+            width: `${contentWidth}px`,
+            height: `${contentHeight}px`,
         }
     };
 
     domtoimage.toPng(content, options)
         .then(function (dataUrl) {
-            // Cria uma nova imagem e define o URL da imagem como a imagem capturada
-            const image = new Image();
-            image.src = dataUrl;
-            image.style.width = `${content.offsetWidth}px`;
-            image.style.height = `${content.offsetHeight}px`;
-
-            // Substitui completamente o conteúdo pelo elemento da imagem
-            content.innerHTML = '';
-            content.appendChild(image);
+            // Habilita o botão de download e define a ação de download
+            const downloadButton = document.querySelector('.buttonDn button');
+            downloadButton.disabled = false;
+            downloadButton.onclick = function () {
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = 'image.png';
+                link.click();
+            };
         })
         .catch(function (error) {
             console.error('Ocorreu um erro ao gerar a imagem:', error);
         });
 }
+
 function configOpen() {
     
 }
