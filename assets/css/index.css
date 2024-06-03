@@ -132,6 +132,63 @@ body .input .title span {
   font-size: 25px;
   color: white;
 }
+body .input .collect {
+  padding: 10px;
+  border: solid 1px #36393f;
+  width: auto;
+  height: auto;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 10px 0;
+}
+body .input .collect span {
+  opacity: 0.8;
+  padding: 5px;
+  font-weight: 600;
+}
+body .input .collect .collectSelect {
+  appearance: none;
+  height: 35px;
+  width: 200px;
+  text-align: center;
+  background-color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+body .input .collect .collectSelect option {
+  text-align: center;
+  padding: 0 5px;
+}
+body .input .messageType {
+  border: solid 1px #36393f;
+  padding: 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+body .input .messageType span {
+  opacity: 0.8;
+  font-weight: 600;
+}
+body .input .messageType div {
+  padding: 5px 0;
+  flex-direction: row;
+}
+body .input .messageType div div {
+  padding: 5px;
+  margin: 5px;
+  flex-direction: column;
+}
+body .input .messageType div div span {
+  font-size: 12px;
+  opacity: 0.8;
+}
+body .input .messageType div div input {
+  margin: 5px 0;
+  cursor: pointer;
+}
 body .input .date {
   flex-direction: column;
   justify-content: center;
@@ -142,6 +199,7 @@ body .input .date span {
   font-size: 20px;
   font-weight: 500;
   margin-bottom: 5px;
+  text-align: center;
 }
 body .input .selection {
   justify-content: center;
@@ -404,7 +462,7 @@ body .output .TableWitData .table .sec .driver {
   text-align: center;
 }
 body .output .TableWitData .table .sec .driver .driverName {
-  width: 80%;
+  min-width: 80%;
   height: auto;
   justify-content: center;
   border: solid 1px #36393f;
@@ -468,6 +526,12 @@ body .output .TableWitData .table .sec .routerCaf {
   padding: 2px 5px;
   border-radius: 3px;
   display: inline-block; /* Adicionado para evitar quebras dentro do elemento */
+  justify-content: center;
+  align-items: center;
+}
+body .output .TableWitData .table .sec .routerCaf .lastDate {
+  opacity: 0.8;
+  font-size: 10px;
 }
 body .output .TableWitData .table .footer {
   justify-content: space-around;

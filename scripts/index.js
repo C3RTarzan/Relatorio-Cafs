@@ -2,35 +2,72 @@ document.addEventListener("DOMContentLoaded", function () {
     getUser();
     handleBoxClicks();
 });
-
 function getData() {
+
     const collectionsElement = document.querySelector(".collections");
 
     if (!collectionsElement) {
         console.error("Element with class 'collections' not found.");
         return;
     }
-
     const collections = collectionsElement.value.trim().split('\n');
     if (collections.length === 0) {
         console.error("No data found in the 'collections' element.");
         return;
     }
+    const typeCollections = collections.map(str => str.split('\t'))[0].length;
+    const selectElement = document.querySelector('select[name="collect"]');
+    if(typeCollections === 3){
+        selectElement.value = 'typeSelectDriver';
+        changeCollect()
+    }else if(typeCollections === 4){
+        selectElement.value = 'typeSelectRouter';
+        changeCollect()
+    }else{
+        console.error("Check the data passed, only data with 3 rows (Route ID of the cafe Driver's Name) and 4 (Route ID of the cafe Date/Time Registration Status Driver's Name) are valid.");
+        return
+    }
+
+    const filter = document.querySelector(".collectSelect")
+    if(filter.value === "typeSelectDriver") {
+        typeDriverData(collections)
+    }else if(filter.value === "typeSelectRouter"){
+        typeRouterData(collections)
+    }
+    
+}
+function typeDriverData(collections){
 
     const items = processData(collections);
     if (!items || items.length === 0) {
         console.error("No items processed.");
         return;
     }
-
     const driverCounts = countDriverNames(items);
-    
     const groupedByName = groupCafsAndRoutersByName(items);
     categorizeDrivers(groupedByName)
     const localGroupedByName = checkAndRemoveDrivers({ ...groupedByName });
-    
-
     renderDataToHtml(driverCounts, localGroupedByName);
+}
+function typeRouterData(collections){
+    const items = processDataRouter(collections);
+    if (!items || items.length === 0) {
+        console.error("No items processed.");
+        return;
+    }
+    const groupedByRouter = groupCafsAndNameByRouters(items);
+    categorizeDrivers(groupedByRouter)
+    const localGroupedByRouter = checkAndRemoveRouter({ ...groupedByRouter });
+
+    const sortedGroupedByRouter = sortObjectByKey(localGroupedByRouter);
+
+    renderDataToHtmlRouter(sortedGroupedByRouter, items);
+}
+function sortObjectByKey(obj) {
+    return Object.keys(obj).sort().reduce((acc, key) => {
+        acc[key] = obj[key];
+        return acc;
+    }, {});
 }
 function checkAndRemoveDrivers(dados) {
     for (const driverName in dados) {
@@ -54,6 +91,27 @@ function checkAndRemoveDrivers(dados) {
         }
     }
     return dados;
+}
+function checkAndRemoveRouter(groupedByRouter) {
+    const metropolitanas = ["EUS", "AQU", "HOR", "PCJ", "ITA", "MRC", "MA1", "MA2", "MR1", "MR2", "CA1", "CA2", "PCT"];
+    const interior = ["S", "V", "W", "L", "Q", "N"];
+
+    for (const router in groupedByRouter) {
+        // Verificar se a rota é uma metropolitana
+        if (metropolitanas.includes(router)) {
+            delete groupedByRouter[router];
+        } else {
+            // Verificar se a rota é uma rota interior
+            for (const prefix of interior) {
+                if (router.startsWith(prefix)) {
+                    delete groupedByRouter[router];
+                    break;
+                }
+            }
+        }
+    }
+
+    return groupedByRouter;
 }
 function countDriverNames(items) {
     const driverCounts = {};
@@ -85,7 +143,7 @@ function categorizeDrivers(data) {
     let metropolitanasCount = 0;
     let interiorCount = 0;
     let localCount = 0;
-    
+
     // Initialize count variables for CAFs in each category
     let metropolitanasCountCaf = 0;
     let interiorCountCaf = 0;
@@ -157,10 +215,83 @@ function groupCafsAndRoutersByName(items) {
 
     return groupedByName;
 }
+function groupCafsAndNameByRouters(items){
+    const groupedByCaf = {};
+
+    items.forEach(item => { 
+        const name = item.driverName;
+        const caf = item.cafID;
+        const routerMatch = item.router.match(/\[(.*?)\]/);
+        const router = routerMatch ? routerMatch[1] : null;
+        if (!router) {
+            console.warn("Router format unexpected:", item.router);
+            return;
+        }
+        
+        if (!groupedByCaf[caf]) {
+            groupedByCaf[caf] = {};
+        }
+
+        if (!groupedByCaf[caf][name]) {
+            groupedByCaf[caf][name] = {};
+        }
+
+        if (!groupedByCaf[caf][name][router]) {
+            groupedByCaf[caf][name][router] = 0;
+        }
+
+        groupedByCaf[caf][name][router]++;
+    });
+
+    const groupedByRouter = {};
+
+    for (const caf in groupedByCaf) {
+        const cafData = groupedByCaf[caf];
+        let maxRouter = null;
+        let maxCount = 0;
+
+        for (const name in cafData) {
+            for (const router in cafData[name]) {
+                if (cafData[name][router] > maxCount || (cafData[name][router] === maxCount && !maxRouter)) {
+                    maxRouter = router;
+                    maxCount = cafData[name][router];
+                }
+            }
+        }
+
+        if (!groupedByRouter[maxRouter]) {
+            groupedByRouter[maxRouter] = {};
+        }
+
+        for (const name in cafData) {
+            if (!groupedByRouter[maxRouter][name]) {
+                groupedByRouter[maxRouter][name] = {};
+            }
+            groupedByRouter[maxRouter][name][caf] = cafData[name][maxRouter];
+        }
+    }
+
+    return groupedByRouter;
+}
+function changeCollect(){
+    const changeTitleCollect = document.querySelector(".changeTitleCollect")
+    const filter = document.querySelector(".collectSelect")
+    if(filter.value === "typeSelectDriver") {
+        changeTitleCollect.innerHTML = "Rota | ID Caf | Motorista"
+    }else if(filter.value === "typeSelectRouter"){
+        changeTitleCollect.innerHTML = "Rota | ID Caf | Data/Hora R. S. | Motorista"
+    }
+}
 function processData(collections) {
     return collections.map(line => {
         const [router, cafID, driverName] = line.split('\t');
-        return {router, cafID, driverName };
+        return { router, cafID, driverName };
+    });
+}
+function processDataRouter(collections) {
+    return collections.map(line => {
+        const [router, cafID, lastDate, driverName] = line.split('\t');
+        return { router, cafID, lastDate, driverName };
     });
 }
 function renderDataToHtml(driverCounts, groupedByName) {
@@ -246,7 +377,98 @@ function renderDataToHtml(driverCounts, groupedByName) {
 
     generateImage();
 }
+function renderDataToHtmlRouter(groupedByRouter, items) {
+    const leftBox = document.querySelector(".leftBox");
+    const rightBox = document.querySelector(".rightBox");
 
+    // Limpar qualquer conteúdo existente
+    leftBox.innerHTML = '';
+    rightBox.innerHTML = '';
+
+    function renderRouter(router, container) {
+        const routerDiv = document.createElement("div");
+        routerDiv.classList.add("driver");
+
+        const driverNameDiv = document.createElement("div");
+        driverNameDiv.classList.add("driverName");
+        driverNameDiv.innerHTML = `<span>${router}</span><span class="QTD QTD3">QTD: ${getRouterTotal(groupedByRouter[router])}</span>`;
+        routerDiv.appendChild(driverNameDiv);
+
+        for (const driver in groupedByRouter[router]) {
+            const driverDiv = document.createElement("div");
+            driverDiv.classList.add("caf");
+
+            const driverNameSpan = document.createElement("span");
+            driverNameSpan.classList.add("valueCaf");
+            driverNameSpan.textContent = driver;
+            driverDiv.appendChild(driverNameSpan);
+
+            for (const caf in groupedByRouter[router][driver]) {
+                const cafDiv = document.createElement("span");
+                cafDiv.classList.add("routerCaf");
+                const total = groupedByRouter[router][driver][caf];
+
+                // Procurar o objeto correspondente em items
+                const item = items.find(item => item.cafID === caf);
+                const formattedDate = item.lastDate.split(' ')[0];
+
+                cafDiv.innerHTML = `<span class="lastDate">(${formattedDate})</span> ${caf} = ${total} `;
+                driverDiv.appendChild(cafDiv);
+            }
+
+            routerDiv.appendChild(driverDiv);
+        }
+
+        container.appendChild(routerDiv);
+    }
+
+    function getRouterTotal(drivers) {
+        let total = 0;
+        for (const driver in drivers) {
+            total += getTotal(drivers[driver]);
+        }
+        return total;
+    }
+
+    function getTotal(caf) {
+        let total = 0;
+        for (const router in caf) {
+            total += caf[router];
+        }
+        return total;
+    }
+
+    const routers = Object.keys(groupedByRouter);
+    const middleIndex = Math.ceil(routers.length / 2);
+    const leftRouters = routers.slice(0, middleIndex);
+    const rightRouters = routers.slice(middleIndex);
+
+    leftRouters.forEach(router => renderRouter(router, leftBox));
+    rightRouters.forEach(router => renderRouter(router, rightBox));
+
+    const cafInput = document.querySelector(".cafsCount");
+    const cardsInput = document.querySelector(".cardsCount");
+
+    let totalCafs = 0;
+    let totalPieces = 0;
+
+    // Iterar sobre cada rota, motorista e caf para calcular os totais
+    for (const router in groupedByRouter) {
+        for (const driver in groupedByRouter[router]) {
+            for (const caf in groupedByRouter[router][driver]) {
+                totalCafs++; // Incrementar o total de cafs
+                // Adicionar o valor de caf diretamente ao total de peças
+                totalPieces += groupedByRouter[router][driver][caf]; // Somar a quantidade de peças
+            }
+        }
+    }
+
+    // Atribuir os totais aos campos de entrada
+    cafInput.value = totalCafs;
+    cardsInput.value = totalPieces;
+
+    generateImage();
+}
 function generateImage() {
     const content = document.querySelector('.sec');
     const scale = 4;  // Ajuste a escala conforme necessário para melhorar a qualidade
@@ -287,9 +509,21 @@ function generateImage() {
             console.error('Ocorreu um erro ao gerar a imagem:', error);
         });
 }
-
+function showBox(clickedCheckbox) {
+    const checkboxes = document.querySelectorAll('input[name="checkbox"]');
+    checkboxes.forEach((checkbox) => {
+        if (checkbox !== clickedCheckbox) {
+            checkbox.checked = false;
+        }
+    });
+}
 function configOpen() {
-    
+    const config = document.querySelector(".config")
+    if (window.getComputedStyle(config).top === "-600px") {
+        config.style = "top: auto";
+    } else {
+        config.style = "top: -600px";
+    }
 }
 function addUser() {
     const user = document.querySelector(".userADD").value.trim()

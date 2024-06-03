@@ -46,8 +46,28 @@
             <button onclick="getData()">Gerar</button>
         </div>
         <div class="date">
-            <span>Rota | ID Caf | Motorista</span>
+            <span class="changeTitleCollect">Rota | ID Caf | Motorista</span>
             <textarea class="collections" id="data"></textarea>
+        </div>
+        <div class="collect">
+            <span>Tipo de filtro</span>
+            <select class="collectSelect" name="collect" onchange="changeCollect()">
+                <option value="typeSelectDriver">Motorista</option>
+                <option value="typeSelectRouter">Rota</option>
+            </select>
+        </div>
+        <div class="messageType">
+            <span>Tipo de Mensagem</span>
+            <div>
+                <div>
+                    <span>Relatorio</span>
+                    <input type="checkbox" id="checkBoxDefault" name="checkbox" checked onclick="showBox(this)">
+                </div>
+                <div>
+                    <span>BackLog</span>
+                    <input type="checkbox" id="checkBoxBacklog" name="checkbox" onclick="showBox(this)">
+                </div>
+            </div>
         </div>
         <div class="selection">
             <div class="titleSec">
@@ -391,20 +411,18 @@
                 <div class="header">
                     <span>Relatorio Caf's</span>
                 </div>
-                
                 <div class="sec">
                     <div class="leftBox">
                         <div class="driver">
-                            <!-- <span class="driverName">Nome do Motorista <span class="QTD QTD3">| QTD: 77 |</span></span> -->
                             <div class="driverName">
-                                <span>Nome do Motorista</span>
-                                <span class="QTD QTD3">| QTD: 77 |</span>
+                                <span>ROTA</span>
+                                <span class="QTD QTD3">QTD: 0</span>
                             </div>
                             <div class="caf">
-                                <span class="driverCaf"> CAF: <span class="valueCaf">00000000</span> <span class="QTD"> | TOTAL: 25 |</span> <span class="routerCaf">04A : 5</span> <span class="routerCaf">04A : 5</span> </span>
+                                <span class="driverCaf"><span class="valueCaf">Nome do motorista</span> <span class="QTD"> | TOTAL: 0 |</span> <span class="lastDate">(DATA)</span> <span class="routerCaf">00000000 = 0</span> <span class="routerCaf">00000000 : 0</span> </span>
                             </div>
                             <div class="caf">
-                                <span class="driverCaf">CAF: <span class="valueCaf">00000000</span> <span class="QTD"> | QTD: 52 |</span> <span class="routerCaf">05A : 2</span> <span class="routerCaf">04A : 5</span> <span class="routerCaf">04A : 5</span> <span class="routerCaf">04A : 5</span> </span>
+                                <span class="driverCaf">CAF: <span class="valueCaf">00000000</span> <span class="QTD"> | QTD: 0 |</span> <span class="routerCaf">05A : 0</span> <span class="routerCaf">04A : 0</span> <span class="routerCaf">04A : 0</span> <span class="routerCaf">04A : 0</span> </span>
                             </div>
                         </div>
                     </div>
@@ -412,12 +430,12 @@
                     <div class="rightBox">
 
                         <div class="driver">
-                            <span class="driverName">Nome do Motorista <span class="QTD QTD3">| QTD: 77 |</span></span>
+                            <span class="driverName">Nome do Motorista <span class="QTD QTD3">| QTD: 0 |</span></span>
                             <div class="caf">
-                                <span class="driverCaf"> CAF: <span class="valueCaf">00000000</span><span class="QTD"> | TOTAL: 25 |</span> <span class="routerCaf">04A : 5</span> <span class="routerCaf">04A : 5</span> </span>
+                                <span class="driverCaf"> CAF: <span class="valueCaf">00000000</span><span class="QTD"> | TOTAL: 0 |</span> <span class="routerCaf">04A : 0</span> <span class="routerCaf">04A : 0</span> </span>
                             </div>
                             <div class="caf">
-                                <span class="driverCaf">CAF: <span class="valueCaf">00000000</span> <span class="QTD"> | QTD: 52 |</span> <span class="routerCaf">05A : 2</span> <span class="routerCaf">04A : 5</span> <span class="routerCaf">04A : 5</span> <span class="routerCaf">04A : 5</span> </span>
+                                <span class="driverCaf">CAF: <span class="valueCaf">00000000</span> <span class="QTD"> | QTD: 0 |</span> <span class="routerCaf">05A : 0</span> <span class="routerCaf">04A : 0</span> <span class="routerCaf">04A : 0</span> <span class="routerCaf">04A : 0</span> </span>
                             </div>
                         </div>
                     </div>
@@ -426,11 +444,11 @@
                 <div class="footer">
                     <div>
                         <span>CAFS: </span>
-                        <span class="inpt"><input class="cafsCount" type="text" value="1" readonly></span>
+                        <span class="inpt"><input class="cafsCount" type="text" value="0" readonly></span>
                     </div>
                     <div>
                         <span>CARDS</span>
-                        <span class="inpt"><input class="cardsCount" type="text" value="77" readonly></span>
+                        <span class="inpt"><input class="cardsCount" type="text" value="0" readonly></span>
                     </div>
                 </div>
 
