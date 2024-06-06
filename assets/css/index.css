@@ -406,7 +406,8 @@ body .output .TableWitData {
   align-items: center;
   flex-direction: column;
 }
-body .output .TableWitData .table {
+body .output .TableWitData .table,
+body .output .TableWitData .table2 {
   width: 100%;
   height: auto;
   padding: 20px 10px;
@@ -416,29 +417,34 @@ body .output .TableWitData .table {
   justify-content: center;
   align-items: center;
 }
-body .output .TableWitData .table span {
+body .output .TableWitData .table span,
+body .output .TableWitData .table2 span {
   color: black;
   font-weight: 500;
 }
-body .output .TableWitData .table .header {
+body .output .TableWitData .table .header,
+body .output .TableWitData .table2 .header {
   width: 80%;
   border: solid 1px #36393f;
   background-color: white;
   padding: 10px;
   justify-content: center;
 }
-body .output .TableWitData .table .header span {
+body .output .TableWitData .table .header span,
+body .output .TableWitData .table2 .header span {
   font-size: 30px;
   font-weight: 600;
 }
-body .output .TableWitData .table .sec {
+body .output .TableWitData .table .sec,
+body .output .TableWitData .table2 .sec {
   width: 80%;
   border: solid 1px #36393f;
   background-color: white;
   padding: 10px 0px;
   flex-direction: row;
 }
-body .output .TableWitData .table .sec .leftBox {
+body .output .TableWitData .table .sec .leftBox,
+body .output .TableWitData .table2 .sec .leftBox {
   padding: 2px 5px;
   width: 50%;
   height: 100%;
@@ -446,7 +452,8 @@ body .output .TableWitData .table .sec .leftBox {
   align-items: center;
   border-right: solid 1px #36393f;
 }
-body .output .TableWitData .table .sec .rightBox {
+body .output .TableWitData .table .sec .rightBox,
+body .output .TableWitData .table2 .sec .rightBox {
   padding: 2px 5px;
   width: 50%;
   height: 100%;
@@ -454,14 +461,16 @@ body .output .TableWitData .table .sec .rightBox {
   align-items: center;
   border-left: solid 1px #36393f;
 }
-body .output .TableWitData .table .sec .driver {
+body .output .TableWitData .table .sec .driver,
+body .output .TableWitData .table2 .sec .driver {
   flex-direction: column;
   width: 100%;
   justify-content: center;
   align-items: center;
   text-align: center;
 }
-body .output .TableWitData .table .sec .driver .driverName {
+body .output .TableWitData .table .sec .driver .driverName,
+body .output .TableWitData .table2 .sec .driver .driverName {
   min-width: 80%;
   height: auto;
   justify-content: center;
@@ -474,49 +483,59 @@ body .output .TableWitData .table .sec .driver .driverName {
   align-items: center;
   line-height: 6px;
 }
-body .output .TableWitData .table .sec .driver .driverName span:nth-child(2) {
+body .output .TableWitData .table .sec .driver .driverName span:nth-child(2),
+body .output .TableWitData .table2 .sec .driver .driverName span:nth-child(2) {
   border-left: solid 1.5px #36393f;
   border-right: solid 1.5px #36393f;
   padding: 5px 3px;
 }
-body .output .TableWitData .table .sec .driver .driverName > * {
+body .output .TableWitData .table .sec .driver .driverName > *,
+body .output .TableWitData .table2 .sec .driver .driverName > * {
   flex: 0 0 max-content;
 }
-body .output .TableWitData .table .sec .driver .caf {
+body .output .TableWitData .table .sec .driver .caf,
+body .output .TableWitData .table2 .sec .driver .caf {
   flex-direction: column;
   width: 80%;
 }
-body .output .TableWitData .table .sec .driver .caf .driverCaf {
+body .output .TableWitData .table .sec .driver .caf .driverCaf,
+body .output .TableWitData .table2 .sec .driver .caf .driverCaf {
   font-size: 12px;
   padding-top: 5px;
 }
-body .output .TableWitData .table .sec .driver .caf .driverCaf .valueCaf {
+body .output .TableWitData .table .sec .driver .caf .driverCaf .valueCaf,
+body .output .TableWitData .table2 .sec .driver .caf .driverCaf .valueCaf {
   font-weight: 600;
 }
-body .output .TableWitData .table .sec .driver .caf .router {
+body .output .TableWitData .table .sec .driver .caf .router,
+body .output .TableWitData .table2 .sec .driver .caf .router {
   padding-left: 30px;
   flex-direction: column;
   width: 100%;
 }
-body .output .TableWitData .table .sec .driver .caf .router .driverRouter {
+body .output .TableWitData .table .sec .driver .caf .router .driverRouter,
+body .output .TableWitData .table2 .sec .driver .caf .router .driverRouter {
   border: solid 1px #36393f;
   margin: 1px 0;
   width: 100%;
   font-size: 8px;
   padding: 5px;
 }
-body .output .TableWitData .table .sec .QTD {
+body .output .TableWitData .table .sec .QTD,
+body .output .TableWitData .table2 .sec .QTD {
   color: #1523b8;
   font-weight: 600;
   font-size: 12px;
   margin: 0 5px;
 }
-body .output .TableWitData .table .sec .QTD3 {
+body .output .TableWitData .table .sec .QTD3,
+body .output .TableWitData .table2 .sec .QTD3 {
   color: #040b57;
   font-weight: 800;
   font-size: 12px;
 }
-body .output .TableWitData .table .sec .routerCaf {
+body .output .TableWitData .table .sec .routerCaf,
+body .output .TableWitData .table2 .sec .routerCaf {
   color: rgb(0, 75, 10);
   font-weight: 600;
   width: auto;
@@ -525,22 +544,26 @@ body .output .TableWitData .table .sec .routerCaf {
   background-color: rgba(0, 0, 0, 0.1);
   padding: 2px 5px;
   border-radius: 3px;
-  display: inline-block; /* Adicionado para evitar quebras dentro do elemento */
+  display: inline-block;
+  /* Adicionado para evitar quebras dentro do elemento */
   justify-content: center;
   align-items: center;
 }
-body .output .TableWitData .table .sec .routerCaf .lastDate {
+body .output .TableWitData .table .sec .routerCaf .lastDate,
+body .output .TableWitData .table2 .sec .routerCaf .lastDate {
   opacity: 0.8;
   font-size: 10px;
 }
-body .output .TableWitData .table .footer {
+body .output .TableWitData .table .footer,
+body .output .TableWitData .table2 .footer {
   justify-content: space-around;
   width: 80%;
   border: solid 1px #36393f;
   background-color: white;
   padding: 10px;
 }
-body .output .TableWitData .table .footer div span {
+body .output .TableWitData .table .footer div span,
+body .output .TableWitData .table2 .footer div span {
   text-align: center;
   width: 80px;
   padding: 5px 0;
@@ -550,7 +573,8 @@ body .output .TableWitData .table .footer div span {
   align-items: center;
   overflow: hidden;
 }
-body .output .TableWitData .table .footer div input {
+body .output .TableWitData .table .footer div input,
+body .output .TableWitData .table2 .footer div input {
   padding: 0;
   width: 100%;
   height: 100%;
@@ -559,7 +583,8 @@ body .output .TableWitData .table .footer div input {
   font-size: 18px;
   background-color: rgba(255, 255, 255, 0);
 }
-body .output .TableWitData .table .buttonDn {
+body .output .TableWitData .table .buttonDn,
+body .output .TableWitData .table2 .buttonDn {
   position: relative;
   width: 100%;
   padding: 10px;
@@ -568,7 +593,8 @@ body .output .TableWitData .table .buttonDn {
   justify-content: center;
   align-items: center;
 }
-body .output .TableWitData .table .buttonDn button {
+body .output .TableWitData .table .buttonDn button,
+body .output .TableWitData .table2 .buttonDn button {
   width: 150px;
   border: none;
   background-color: #28a745;
@@ -580,24 +606,30 @@ body .output .TableWitData .table .buttonDn button {
   cursor: pointer;
   margin-bottom: 20px;
 }
-body .output .TableWitData .table .buttonDn button:hover {
+body .output .TableWitData .table .buttonDn button:hover,
+body .output .TableWitData .table2 .buttonDn button:hover {
   opacity: 0.8;
 }
-body .output .TableWitData .table .buttonDn button:disabled {
+body .output .TableWitData .table .buttonDn button:disabled,
+body .output .TableWitData .table2 .buttonDn button:disabled {
   cursor: default;
   background-color: rgb(32, 32, 32);
 }
-body .output .TableWitData .table .buttonDn button:disabled:hover {
+body .output .TableWitData .table .buttonDn button:disabled:hover,
+body .output .TableWitData .table2 .buttonDn button:disabled:hover {
   opacity: 1;
 }
-body .output .TableWitData .table .buttonDn .buttonsole {
+body .output .TableWitData .table .buttonDn .buttonsole,
+body .output .TableWitData .table2 .buttonDn .buttonsole {
   margin-bottom: 10px;
   width: 200px;
 }
-body .output .TableWitData .table .buttonDn input {
+body .output .TableWitData .table .buttonDn input,
+body .output .TableWitData .table2 .buttonDn input {
   text-align: center;
 }
-body .output .TableWitData .table .buttonDn .collectSelectName {
+body .output .TableWitData .table .buttonDn .collectSelectName,
+body .output .TableWitData .table2 .buttonDn .collectSelectName {
   appearance: none;
   height: 25px;
   margin-bottom: 10px;
@@ -608,7 +640,8 @@ body .output .TableWitData .table .buttonDn .collectSelectName {
   border-radius: 3px;
   cursor: pointer;
 }
-body .output .TableWitData .table .buttonDn .icon {
+body .output .TableWitData .table .buttonDn .icon,
+body .output .TableWitData .table2 .buttonDn .icon {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -616,7 +649,8 @@ body .output .TableWitData .table .buttonDn .icon {
   color: #d6d7d9;
   cursor: pointer;
 }
-body .output .TableWitData .table .buttonDn .icon:hover {
+body .output .TableWitData .table .buttonDn .icon:hover,
+body .output .TableWitData .table2 .buttonDn .icon:hover {
   opacity: 0.8;
 }
 body .output .message {
@@ -636,7 +670,6 @@ body .output .message .box {
 body .output .message .box .msg {
   position: relative;
   padding: 10px;
-  border-bottom: solid 1px #36393f;
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -664,6 +697,19 @@ body .output .message .box .msg .copy {
   border-radius: 5px;
   background-color: rgba(0, 0, 0, 0.8);
   color: #d6d7d9;
+}
+body .output .CRD {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 20px;
+}
+body .output .CRD span {
+  width: 100%;
+}
+body .output .CRD a {
+  margin: 0;
+  padding-right: 5px;
 }
 body .config {
   padding: 0 10px;
