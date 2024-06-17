@@ -29,12 +29,20 @@ function getData() {
     }
 
     const filter = document.querySelector(".collectSelectType")
+
+    const backlog = document.querySelector("#checkBoxBacklog").checked
+
+    if(!backlog && collections !== undefined){
+        setMessage(collections)
+    }else if(backlog && collections !== undefined){
+        setMessageBackLog(collections)
+    }else{
+        return console.error("Invalid invalid data.")
+    }
     
     if(filter.value === "typeSelectDriver") {
-        setMessage(collections)
         typeDriverData(collections)
     }else if(filter.value === "typeSelectRouter"){
-        setMessage(collections)
         typeRouterData(collections)
     }else{
         return console.error("Invalid invalid data.")
@@ -323,7 +331,7 @@ function renderDataToHtml(driverCounts, groupedByName) {
     cafInput.value = totalCafs;
     cardsInput.value = totalRouters;
 
-    generateImage();
+    generateImage("table");
 }
 function renderDataToHtml2(driverCounts, groupedByName) {
     const secElement = document.querySelector(".table2 .sec");
@@ -370,7 +378,7 @@ function renderDataToHtml2(driverCounts, groupedByName) {
                 for (const router in routers) {
                     const routerSpan = document.createElement("span");
                     routerSpan.classList.add("routerCaf");
-                    routerSpan.innerHTML = `${router} = ${routers[router]}`;
+                    routerSpan.innerHTML = `${router}:${routers[router]}`;
                     cafSpan.appendChild(routerSpan);
                 }
 
@@ -387,11 +395,13 @@ function renderDataToHtml2(driverCounts, groupedByName) {
     renderDrivers(leftDrivers, leftBox);
     renderDrivers(rightDrivers, rightBox);
 
+    
+
     const totalCafs = document.querySelectorAll('.table2 .caf').length;
     document.querySelector(".table2 .cafsCount").value = totalCafs;
     document.querySelector(".table2 .cardsCount").value = totalPieces; // Usar a contagem correta de peças
 
-    generateImageInt(); // Atualizar a imagem
+    generateImage("table2"); // Atualizar a imagem
 }
 function renderDataToHtmlRouter(groupedByRouter, items) {
     const leftBox = document.querySelector(".table .leftBox");
@@ -416,7 +426,7 @@ function renderDataToHtmlRouter(groupedByRouter, items) {
 
             const driverNameSpan = document.createElement("span");
             driverNameSpan.classList.add("valueCaf");
-            driverNameSpan.textContent = driver;
+            //driverNameSpan.textContent = driver;
             driverDiv.appendChild(driverNameSpan);
 
             for (const caf in groupedByRouter[router][driver]) {
@@ -476,7 +486,7 @@ function renderDataToHtmlRouter(groupedByRouter, items) {
     cafInput.value = totalCafs;
     cardsInput.value = totalPieces;
 
-    generateImage();
+    generateImage("table");
 }
 function renderDataToHtmlRouter2(groupedByRouter, items) {
     const leftBox = document.querySelector(".table2 .leftBox");
@@ -501,7 +511,7 @@ function renderDataToHtmlRouter2(groupedByRouter, items) {
 
             const driverNameSpan = document.createElement("span");
             driverNameSpan.classList.add("valueCaf");
-            driverNameSpan.textContent = driver;
+            //driverNameSpan.textContent = driver;
             driverDiv.appendChild(driverNameSpan);
 
             for (const caf in groupedByRouter[router][driver]) {
@@ -561,15 +571,46 @@ function renderDataToHtmlRouter2(groupedByRouter, items) {
     cafInput.value = totalCafs;
     cardsInput.value = totalPieces;
 
-    generateImageInt(); // Atualizar a imagem
+    generateImage("table2"); // Atualizar a imagem
 }
-function generateImage() {
-    const content = document.querySelector('.table .sec');
-    const scale = 4;  // Ajuste a escala conforme necessário para melhorar a qualidade
-    const a4Width = 794;  // Largura da folha A4 em pixels a 96 DPI
-    const a4Height = 1123;  // Altura da folha A4 em pixels a 96 DPI
+async function generateImage(className) {
+    const content = document.querySelector(`.${className}`);
+    const button = content.querySelector('.buttonDn');
+    const header = content.querySelector('.header');
+    const sec = content.querySelector('.sec');
+    const footer = content.querySelector('.footer');
 
-    // Ajustar o tamanho do conteúdo para caber em uma folha A4
+    // Store the original styles
+    const originalStyles = {
+        buttonDisplay: button.style.display,
+        header: {
+            width: header.style.width,
+            padding: header.style.padding,
+        },
+        sec: {
+            width: sec.style.width,
+            padding: sec.style.padding,
+        },
+        footer: {
+            width: footer.style.width,
+            padding: footer.style.padding,
+        },
+        contentPadding: content.style.padding
+    };
+
+    // Hide the button and adjust the width of elements
+    button.style.display = "none";
+    [header, sec, footer].forEach(element => {
+        element.style.width = "100%";
+        element.style.padding = "0";
+    });
+    content.style.padding = "0";
+
+    const scale = 4;  // Adjust the scale as necessary to improve quality
+    const a4Width = 794;  // A4 sheet width in pixels at 96 DPI
+    const a4Height = 1123;  // A4 sheet height in pixels at 96 DPI
+
+    // Adjust content size to fit an A4 sheet
     const contentWidth = content.offsetWidth;
     const contentHeight = content.offsetHeight;
     const widthRatio = a4Width / contentWidth;
@@ -587,61 +628,33 @@ function generateImage() {
         }
     };
 
-    domtoimage.toPng(content, options)
-        .then(function (dataUrl) {
-            // Habilita o botão de download e define a ação de download
-            const downloadButton = document.querySelector('.table .buttonDn button');
-            downloadButton.disabled = false;
-            downloadButton.onclick = function () {
-                const link = document.createElement('a');
-                link.href = dataUrl;
-                link.download = 'image.png';
-                link.click();
-            };
-        })
-        .catch(function (error) {
-            console.error('Ocorreu um erro ao gerar a imagem:', error);
-        });
-}
-function generateImageInt() {
-    const content = document.querySelector('.table2 .sec');
-    const scale = 4;  // Ajuste a escala conforme necessário para melhorar a qualidade
-    const a4Width = 794;  // Largura da folha A4 em pixels a 96 DPI
-    const a4Height = 1123;  // Altura da folha A4 em pixels a 96 DPI
+    try {
+        const dataUrl = await domtoimage.toPng(content, options);
 
-    // Ajustar o tamanho do conteúdo para caber em uma folha A4
-    const contentWidth = content.offsetWidth;
-    const contentHeight = content.offsetHeight;
-    const widthRatio = a4Width / contentWidth;
-    const heightRatio = a4Height / contentHeight;
-    const fitScale = Math.min(widthRatio, heightRatio);
+        // Restore the original styles
+        button.style.display = originalStyles.buttonDisplay;
+        header.style.width = originalStyles.header.width;
+        header.style.padding = originalStyles.header.padding;
+        sec.style.width = originalStyles.sec.width;
+        sec.style.padding = originalStyles.sec.padding;
+        footer.style.width = originalStyles.footer.width;
+        footer.style.padding = originalStyles.footer.padding;
+        content.style.padding = originalStyles.contentPadding;
 
-    const options = {
-        width: contentWidth * fitScale * scale,
-        height: contentHeight * fitScale * scale,
-        style: {
-            transform: `scale(${fitScale * scale})`,
-            transformOrigin: 'top left',
-            width: `${contentWidth}px`,
-            height: `${contentHeight}px`,
-        }
-    };
-
-    domtoimage.toPng(content, options)
-        .then(function (dataUrl) {
-            // Habilita o botão de download e define a ação de download
-            const downloadButton = document.querySelector('.table2 .buttonDn button');
-            downloadButton.disabled = false;
-            downloadButton.onclick = function () {
-                const link = document.createElement('a');
-                link.href = dataUrl;
-                link.download = 'image.png';
-                link.click();
-            };
-        })
-        .catch(function (error) {
-            console.error('Ocorreu um erro ao gerar a imagem:', error);
-        });
+        // Enable the download button and set the download action
+        const downloadButton = content.querySelector('.buttonDn button');
+        downloadButton.disabled = false;
+        downloadButton.onclick = function () {
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = 'RelatórioCaf.png';
+            link.click();
+        };
+    } catch (error) {
+        // Restore the button if an error occurs
+        button.style.display = "flex";
+        console.error('An error occurred while generating the image:', error);
+    }
 }
 function showBox(clickedCheckbox) {
     const checkboxes = document.querySelectorAll('input[name="checkbox"]');
@@ -792,7 +805,6 @@ function handleBoxClicks() {
         });
     });
 }
-
 function setMessage(itemList) {
     // Formata a lista de itens
     const itens = formatList(itemList);
@@ -822,14 +834,15 @@ function setMessage(itemList) {
     const mensagemHTML = `
         <div class="msg">
             <span class="text textcopy withGraphic" onclick="copy()" style="white-space: pre-line;">
-                Boa noite,
-                *Caf's de cards feitas pelo 3° turno*
+                Boa noite.<span style="display: none;">br</span>
+
+                *Caf's de cards feitas pelo 3° turno*<span style="display: none;">br</span>
 
                 Hoje (*${dataAtual}*), foram feitas *${quantidadeCafIDsNaoInterior}* caf's, movimentado 
-                *${quantidadeRoutersNaoInterior}* cartões para serem expedidos.
+                *${quantidadeRoutersNaoInterior}* cartões para serem expedidos.<span style="display: none;">br</span>
 
                 Interior foram feitos *${rotasInterior}*, sendo *${quantidadeCafIDsInterior}* caf's,
-                movimentando um total de *${quantidadeRoutersInterior}* cartões.
+                movimentando um total de *${quantidadeRoutersInterior}* cartões.<span style="display: none;">br</span>
 
                 ~${user}.
             </span>
@@ -847,8 +860,60 @@ function setMessage(itemList) {
         console.error("Elemento .msg não encontrado para inserir a mensagem.");
     }
 }
+function setMessageBackLog(itemList){
+    // Formata a lista de itens
+    const itens = formatList(itemList);
 
+    // Separa os itens em "Interior" e "Não Interior"
+    const { naoInterior, interior } = filterAndSeparateItems(itens);
 
+    // Quantidade de cafIDs únicos para Não Interior
+    const quantidadeCafIDsNaoInterior = countUniqueCafIDs(naoInterior);
+    // Quantidade total de routers para Não Interior
+    const quantidadeRoutersNaoInterior = naoInterior.length;
+
+    // Quantidade de cafIDs únicos para Interior
+    const quantidadeCafIDsInterior = countUniqueCafIDs(interior);
+    // Quantidade total de routers para Interior
+    const quantidadeRoutersInterior = interior.length;
+
+    // Transformar rotas de Interior
+    const rotasInterior = transformInteriorRoutes(interior);
+
+    // Obtém a data atual
+    const dataAtual = new Date().toLocaleDateString();
+
+    const user = document.querySelector(".nameUser").value;
+
+    // Constrói a mensagem HTML de forma mais organizada
+    const mensagemHTML = `
+        <div class="msg">
+            <span class="text textcopy withGraphic" onclick="copy()" style="white-space: pre-line;">
+                *BackLog de CARDS.*<span style="display: none;">br</span>
+
+                Temos um total de *${quantidadeCafIDsNaoInterior}* caf's, movimentado 
+                *${quantidadeRoutersNaoInterior}* cartões para serem expedidos com prioridade.<span style="display: none;">br</span>
+
+                Dar atenção as Caf's:
+                CAF: 1234567 ( *DATA* ).
+                CAF: 1234567 ( *DATA* ).<span style="display: none;">br</span>
+
+                ~${user}.
+            </span>
+            <span class="copy" style="position: absolute;">Copiado</span>
+        </div>
+    `;
+
+    // Seleciona o elemento onde você deseja inserir a mensagem
+    const mensagemContainer = document.querySelector(".msg");
+
+    // Insere a mensagem HTML dentro do elemento selecionado
+    if (mensagemContainer) {
+        mensagemContainer.innerHTML = mensagemHTML;
+    } else {
+        console.error("Elemento .msg não encontrado para inserir a mensagem.");
+    }
+}
 function filterAndSeparateItems(itemList) {
     const naoInterior = [];
     const interior = [];
@@ -905,9 +970,6 @@ function transformInteriorRoutes(interiorList) {
 
     return Array.from(transformedRoutes).join(' | ');
 }
-
-
-
 function formatList(inputList) {
     return inputList.map(item => {
         let parts = item.split('\t');
@@ -925,7 +987,6 @@ function formatList(inputList) {
         };
     });
 }
-
 function countUniqueCafIDs(itemList) {
     const cafIDsSet = new Set(itemList.map(item => item.cafID));
 
