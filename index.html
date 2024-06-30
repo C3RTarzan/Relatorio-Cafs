@@ -18,7 +18,7 @@
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js" integrity="sha256-c9vxcXyAG4paArQG3xk6DjyW/9aHxai2ef9RpMWO44A=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
-    <title>Relatorio Caf's</title>
+    <title>Relatorio Card's - Caf's</title>
 </head>
 
 <body>
@@ -46,8 +46,14 @@
             <button onclick="getData()">Gerar</button>
         </div>
         <div class="date">
-            <span class="changeTitleCollect">Rota | ID Caf | Motorista</span>
+            <span class="changeTitleCollect">Hoje</span>
+            <span class="dataEntry">Rota | ID Caf | Motorista</span>
             <textarea class="collections" id="data"></textarea>
+        </div>
+        <div class="dateBackLog">
+            <span class="changeTitleCollect">BackLog</span>
+            <span class="dataEntry">Rota | ID Caf | Data/Hora Registro Status | Motorista</span>
+            <textarea class="collectionsBackLog" id="data"></textarea>
         </div>
         <div class="collect">
             <span>Nome</span>
@@ -58,7 +64,7 @@
         </div>
         <div class="collect">
             <span>Tipo de filtro</span>
-            <select class="collectSelect collectSelectType" name="collect" onchange="changeCollect()">
+            <select class="collectSelect collectSelectType" name="collect">
                 <option value="typeSelectDriver">Motorista</option>
                 <option value="typeSelectRouter">Rota</option>
             </select>
@@ -67,302 +73,11 @@
             <span>Tipo de Mensagem</span>
             <div>
                 <div>
-                    <span>Relatorio</span>
-                    <input type="checkbox" id="checkBoxDefault" name="checkbox" checked onclick="showBox(this)">
-                </div>
-                <div>
                     <span>BackLog</span>
-                    <input type="checkbox" id="checkBoxBacklog" name="checkbox" onclick="showBox(this)">
+                    <input type="checkbox" id="checkBoxBackLog" name="checkbox">
                 </div>
             </div>
         </div>
-        <div class="selection">
-            <div class="titleSec">
-                <span>Rotas Não Feitas</span>
-            </div>
-            <span class="titleSelect">Interior</span>
-            <div class="boxSelection">
-                <div class="checkbox">
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>LESTE</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>OESTE</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>SERRA</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>VALE</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>QUIXADA</span>
-                    </div>
-                </div>
-            </div>
-            <span class="titleSelect">Metropolitano</span>
-            <div class="boxSelection boxSelectionMt">
-                <div class="checkbox">
-                    <div class="mainBox mainBoxMTP">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>EUS/AQU</span>
-                    </div>
-                    <div class="mainBox mainBoxMTP">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>HOR/PCJ/ITA</span>
-                    </div>
-                    <div class="mainBox mainBoxMTP">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>MRC</span>
-                    </div>
-                    <div class="mainBox mainBoxMTP">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>MA1/MA2</span>
-                    </div>
-                    <div class="mainBox mainBoxMTP">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>CA1/CA2</span>
-                    </div>
-                    <div class="mainBox mainBoxMTP">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>PCT</span>
-                    </div>
-                </div>
-            </div>
-            <span class="titleSelect">Locais</span>
-            <div class="boxSelection boxSelectionMt">
-                <div class="checkbox">
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>01A</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>01B</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>01C</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>02A</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>02B</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>02C</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>03A</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>03B</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>03C</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>04A</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>04B</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>04C</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>05A</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>05B</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>06A</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>06B</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>07A</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>07B</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>07C</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>07D</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>08A</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>08B</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>08C</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>09A</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>09B</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>09C</span>
-                    </div>
-                    <div class="mainBox">
-                        <div class="box">
-                            <iconify-icon  class="icon iconOpen"
-                                icon="mingcute:check-fill"></iconify-icon>
-                        </div>
-                        <span>09D</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="button">
             <button class="buttonsole" onclick="getData()">Gerar</button>
         </div>
@@ -416,7 +131,7 @@
             </div>
             <div class="table">
                 <div class="header">
-                    <span>Relatorio Caf's</span>
+                    <span>Relatorio Card's Local / Metropolitano - Caf's </span>
                 </div>
                 <div class="sec">
                     <div class="leftBox">
@@ -457,10 +172,9 @@
                     <button disabled>Baixar</button>
                 </div>
             </div>
-
             <div class="table2">
                 <div class="header">
-                    <span>Relatorio Caf's Interior</span>
+                    <span>Relatorio Card's Interior - Caf's</span>
                 </div>
                 <div class="sec">
                     <div class="leftBox">
@@ -486,6 +200,69 @@
                     </div>
                 </div>
              
+                <div class="footer">
+                    <div>
+                        <span>CAFS: </span>
+                        <span class="inpt"><input class="cafsCount" type="text" value="0" readonly></span>
+                    </div>
+                    <div>
+                        <span>CARDS</span>
+                        <span class="inpt"><input class="cardsCount" type="text" value="0" readonly></span>
+                    </div>
+                </div>
+
+                <div class="buttonDn">
+                    <button disabled>Baixar</button>
+                </div>
+            </div>
+            <div class="table3">
+                <div class="header">
+                    <span>Relatorio Card's - Caf's</span>
+                </div>
+                <div class="sec">
+                    <div class="leftBox">
+                        <div class="driver">
+                            <div class="driverName">
+                                <span>ROTA</span>
+                                <span class="QTD QTD3">QTD: 0</span>
+                            </div>
+                            <div class="caf">
+                                <span class="driverCaf"><span class="valueCaf">Nome do motorista</span> <span class="QTD"> | TOTAL: 0 |</span> <span class="lastDate">(DATA)</span> <span class="routerCaf">00000000 = 0</span> <span class="routerCaf">00000000 : 0</span> </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rightBox">
+
+                        <div class="driver">
+                            <span class="driverName">Nome do Motorista <span class="QTD QTD3">| QTD: 0 |</span></span>
+                            <div class="caf">
+                                <span class="driverCaf"> CAF: <span class="valueCaf">00000000</span><span class="QTD"> | TOTAL: 0 |</span> <span class="routerCaf">00A : 0</span> <span class="routerCaf">00A : 0</span> </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+                <span class="BgTitle">BackLog</span>
+                <div class="sec2">
+                    <div class="leftBox">
+                        <div class="driver">
+                            <span class="driverName">Nome do Motorista <span class="QTD QTD3">| QTD: 0 |</span></span>
+                            <div class="caf">
+                                <span class="driverCaf"> CAF: <span class="valueCaf">00000000</span><span class="QTD"> | TOTAL: 0 |</span> <span class="routerCaf">00A : 0</span> <span class="routerCaf">00A : 0</span> </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rightBox">
+
+                        <div class="driver">
+                            <span class="driverName">Nome do Motorista <span class="QTD QTD3">| QTD: 0 |</span></span>
+                            <div class="caf">
+                                <span class="driverCaf"> CAF: <span class="valueCaf">00000000</span><span class="QTD"> | TOTAL: 0 |</span> <span class="routerCaf">00A : 0</span> <span class="routerCaf">00A : 0</span> </span>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
                 <div class="footer">
                     <div>
                         <span>CAFS: </span>
@@ -525,7 +302,7 @@
             </div>
         </div>
         <div class="CRD">
-            <a href="https://github.com/C3RTarzan" target="_blank">@PinkUppers</a> <span class="version">v0.6</span>
+            <a href="https://github.com/C3RTarzan" target="_blank">@PinkUppers</a> <span class="version">v0.7</span>
         </div>
     </div>
 

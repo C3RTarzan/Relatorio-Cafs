@@ -189,16 +189,22 @@ body .input .messageType div div input {
   margin: 5px 0;
   cursor: pointer;
 }
-body .input .date {
+body .input .date, body .input .dateBackLog {
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 10px;
 }
-body .input .date span {
+body .input .date span, body .input .dateBackLog span {
   font-size: 20px;
   font-weight: 500;
   margin-bottom: 5px;
+  text-align: center;
+}
+body .input .date .dataEntry, body .input .dateBackLog .dataEntry {
+  font-size: 12px;
+  opacity: 0.8;
+  font-weight: 300;
   text-align: center;
 }
 body .input .selection {
@@ -289,6 +295,7 @@ body .input .button {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-top: 10px;
 }
 body .input .button button {
   width: 150px;
@@ -407,7 +414,8 @@ body .output .TableWitData {
   flex-direction: column;
 }
 body .output .TableWitData .table,
-body .output .TableWitData .table2 {
+body .output .TableWitData .table2,
+body .output .TableWitData .table3 {
   width: 100%;
   height: auto;
   padding: 20px 10px;
@@ -418,12 +426,28 @@ body .output .TableWitData .table2 {
   align-items: center;
 }
 body .output .TableWitData .table span,
-body .output .TableWitData .table2 span {
+body .output .TableWitData .table2 span,
+body .output .TableWitData .table3 span {
   color: black;
   font-weight: 500;
 }
+body .output .TableWitData .table .BgTitle,
+body .output .TableWitData .table2 .BgTitle,
+body .output .TableWitData .table3 .BgTitle {
+  background-color: white;
+  margin: 0;
+  padding: 0;
+  width: 80%;
+  border-left: solid 1px #36393f;
+  border-right: solid 1px #36393f;
+  box-shadow: none;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
 body .output .TableWitData .table .header,
-body .output .TableWitData .table2 .header {
+body .output .TableWitData .table2 .header,
+body .output .TableWitData .table3 .header {
   width: 80%;
   border: solid 1px #36393f;
   background-color: white;
@@ -431,22 +455,29 @@ body .output .TableWitData .table2 .header {
   justify-content: center;
 }
 body .output .TableWitData .table .header span,
-body .output .TableWitData .table2 .header span {
+body .output .TableWitData .table2 .header span,
+body .output .TableWitData .table3 .header span {
   font-size: 30px;
   font-weight: 600;
   width: 100%;
   text-align: center;
 }
-body .output .TableWitData .table .sec,
-body .output .TableWitData .table2 .sec {
+body .output .TableWitData .table .sec, body .output .TableWitData .table .sec2,
+body .output .TableWitData .table2 .sec,
+body .output .TableWitData .table2 .sec2,
+body .output .TableWitData .table3 .sec,
+body .output .TableWitData .table3 .sec2 {
   width: 80%;
   border: solid 1px #36393f;
   background-color: white;
   padding: 10px 0px;
   flex-direction: row;
 }
-body .output .TableWitData .table .sec .leftBox,
-body .output .TableWitData .table2 .sec .leftBox {
+body .output .TableWitData .table .sec .leftBox, body .output .TableWitData .table .sec2 .leftBox,
+body .output .TableWitData .table2 .sec .leftBox,
+body .output .TableWitData .table2 .sec2 .leftBox,
+body .output .TableWitData .table3 .sec .leftBox,
+body .output .TableWitData .table3 .sec2 .leftBox {
   padding: 2px 5px;
   width: 50%;
   height: 100%;
@@ -454,8 +485,11 @@ body .output .TableWitData .table2 .sec .leftBox {
   align-items: center;
   border-right: solid 1px #36393f;
 }
-body .output .TableWitData .table .sec .rightBox,
-body .output .TableWitData .table2 .sec .rightBox {
+body .output .TableWitData .table .sec .rightBox, body .output .TableWitData .table .sec2 .rightBox,
+body .output .TableWitData .table2 .sec .rightBox,
+body .output .TableWitData .table2 .sec2 .rightBox,
+body .output .TableWitData .table3 .sec .rightBox,
+body .output .TableWitData .table3 .sec2 .rightBox {
   padding: 2px 5px;
   width: 50%;
   height: 100%;
@@ -463,16 +497,22 @@ body .output .TableWitData .table2 .sec .rightBox {
   align-items: center;
   border-left: solid 1px #36393f;
 }
-body .output .TableWitData .table .sec .driver,
-body .output .TableWitData .table2 .sec .driver {
+body .output .TableWitData .table .sec .driver, body .output .TableWitData .table .sec2 .driver,
+body .output .TableWitData .table2 .sec .driver,
+body .output .TableWitData .table2 .sec2 .driver,
+body .output .TableWitData .table3 .sec .driver,
+body .output .TableWitData .table3 .sec2 .driver {
   flex-direction: column;
   width: 100%;
   justify-content: center;
   align-items: center;
   text-align: center;
 }
-body .output .TableWitData .table .sec .driver .driverName,
-body .output .TableWitData .table2 .sec .driver .driverName {
+body .output .TableWitData .table .sec .driver .driverName, body .output .TableWitData .table .sec2 .driver .driverName,
+body .output .TableWitData .table2 .sec .driver .driverName,
+body .output .TableWitData .table2 .sec2 .driver .driverName,
+body .output .TableWitData .table3 .sec .driver .driverName,
+body .output .TableWitData .table3 .sec2 .driver .driverName {
   min-width: 80%;
   height: auto;
   justify-content: center;
@@ -485,59 +525,89 @@ body .output .TableWitData .table2 .sec .driver .driverName {
   align-items: center;
   line-height: 6px;
 }
-body .output .TableWitData .table .sec .driver .driverName span:nth-child(2),
-body .output .TableWitData .table2 .sec .driver .driverName span:nth-child(2) {
+body .output .TableWitData .table .sec .driver .driverName span:nth-child(2), body .output .TableWitData .table .sec2 .driver .driverName span:nth-child(2),
+body .output .TableWitData .table2 .sec .driver .driverName span:nth-child(2),
+body .output .TableWitData .table2 .sec2 .driver .driverName span:nth-child(2),
+body .output .TableWitData .table3 .sec .driver .driverName span:nth-child(2),
+body .output .TableWitData .table3 .sec2 .driver .driverName span:nth-child(2) {
   border-left: solid 1.5px #36393f;
   border-right: solid 1.5px #36393f;
   padding: 5px 3px;
 }
-body .output .TableWitData .table .sec .driver .driverName > *,
-body .output .TableWitData .table2 .sec .driver .driverName > * {
+body .output .TableWitData .table .sec .driver .driverName > *, body .output .TableWitData .table .sec2 .driver .driverName > *,
+body .output .TableWitData .table2 .sec .driver .driverName > *,
+body .output .TableWitData .table2 .sec2 .driver .driverName > *,
+body .output .TableWitData .table3 .sec .driver .driverName > *,
+body .output .TableWitData .table3 .sec2 .driver .driverName > * {
   flex: 0 0 max-content;
 }
-body .output .TableWitData .table .sec .driver .caf,
-body .output .TableWitData .table2 .sec .driver .caf {
+body .output .TableWitData .table .sec .driver .caf, body .output .TableWitData .table .sec2 .driver .caf,
+body .output .TableWitData .table2 .sec .driver .caf,
+body .output .TableWitData .table2 .sec2 .driver .caf,
+body .output .TableWitData .table3 .sec .driver .caf,
+body .output .TableWitData .table3 .sec2 .driver .caf {
   flex-direction: column;
   width: 80%;
 }
-body .output .TableWitData .table .sec .driver .caf .driverCaf,
-body .output .TableWitData .table2 .sec .driver .caf .driverCaf {
+body .output .TableWitData .table .sec .driver .caf .driverCaf, body .output .TableWitData .table .sec2 .driver .caf .driverCaf,
+body .output .TableWitData .table2 .sec .driver .caf .driverCaf,
+body .output .TableWitData .table2 .sec2 .driver .caf .driverCaf,
+body .output .TableWitData .table3 .sec .driver .caf .driverCaf,
+body .output .TableWitData .table3 .sec2 .driver .caf .driverCaf {
   font-size: 12px;
   padding-top: 5px;
 }
-body .output .TableWitData .table .sec .driver .caf .driverCaf .valueCaf,
-body .output .TableWitData .table2 .sec .driver .caf .driverCaf .valueCaf {
+body .output .TableWitData .table .sec .driver .caf .driverCaf .valueCaf, body .output .TableWitData .table .sec2 .driver .caf .driverCaf .valueCaf,
+body .output .TableWitData .table2 .sec .driver .caf .driverCaf .valueCaf,
+body .output .TableWitData .table2 .sec2 .driver .caf .driverCaf .valueCaf,
+body .output .TableWitData .table3 .sec .driver .caf .driverCaf .valueCaf,
+body .output .TableWitData .table3 .sec2 .driver .caf .driverCaf .valueCaf {
   font-weight: 600;
 }
-body .output .TableWitData .table .sec .driver .caf .router,
-body .output .TableWitData .table2 .sec .driver .caf .router {
+body .output .TableWitData .table .sec .driver .caf .router, body .output .TableWitData .table .sec2 .driver .caf .router,
+body .output .TableWitData .table2 .sec .driver .caf .router,
+body .output .TableWitData .table2 .sec2 .driver .caf .router,
+body .output .TableWitData .table3 .sec .driver .caf .router,
+body .output .TableWitData .table3 .sec2 .driver .caf .router {
   padding-left: 30px;
   flex-direction: column;
   width: 100%;
 }
-body .output .TableWitData .table .sec .driver .caf .router .driverRouter,
-body .output .TableWitData .table2 .sec .driver .caf .router .driverRouter {
+body .output .TableWitData .table .sec .driver .caf .router .driverRouter, body .output .TableWitData .table .sec2 .driver .caf .router .driverRouter,
+body .output .TableWitData .table2 .sec .driver .caf .router .driverRouter,
+body .output .TableWitData .table2 .sec2 .driver .caf .router .driverRouter,
+body .output .TableWitData .table3 .sec .driver .caf .router .driverRouter,
+body .output .TableWitData .table3 .sec2 .driver .caf .router .driverRouter {
   border: solid 1px #36393f;
   margin: 1px 0;
   width: 100%;
   font-size: 8px;
   padding: 5px;
 }
-body .output .TableWitData .table .sec .QTD,
-body .output .TableWitData .table2 .sec .QTD {
+body .output .TableWitData .table .sec .QTD, body .output .TableWitData .table .sec2 .QTD,
+body .output .TableWitData .table2 .sec .QTD,
+body .output .TableWitData .table2 .sec2 .QTD,
+body .output .TableWitData .table3 .sec .QTD,
+body .output .TableWitData .table3 .sec2 .QTD {
   color: #1523b8;
   font-weight: 600;
   font-size: 12px;
   margin: 0 5px;
 }
-body .output .TableWitData .table .sec .QTD3,
-body .output .TableWitData .table2 .sec .QTD3 {
+body .output .TableWitData .table .sec .QTD3, body .output .TableWitData .table .sec2 .QTD3,
+body .output .TableWitData .table2 .sec .QTD3,
+body .output .TableWitData .table2 .sec2 .QTD3,
+body .output .TableWitData .table3 .sec .QTD3,
+body .output .TableWitData .table3 .sec2 .QTD3 {
   color: #040b57;
   font-weight: 800;
   font-size: 12px;
 }
-body .output .TableWitData .table .sec .routerCaf,
-body .output .TableWitData .table2 .sec .routerCaf {
+body .output .TableWitData .table .sec .routerCaf, body .output .TableWitData .table .sec2 .routerCaf,
+body .output .TableWitData .table2 .sec .routerCaf,
+body .output .TableWitData .table2 .sec2 .routerCaf,
+body .output .TableWitData .table3 .sec .routerCaf,
+body .output .TableWitData .table3 .sec2 .routerCaf {
   color: rgb(0, 75, 10);
   font-weight: 600;
   width: auto;
@@ -551,13 +621,27 @@ body .output .TableWitData .table2 .sec .routerCaf {
   justify-content: center;
   align-items: center;
 }
-body .output .TableWitData .table .sec .routerCaf .lastDate,
-body .output .TableWitData .table2 .sec .routerCaf .lastDate {
+body .output .TableWitData .table .sec .routerCaf .lastDate, body .output .TableWitData .table .sec2 .routerCaf .lastDate,
+body .output .TableWitData .table2 .sec .routerCaf .lastDate,
+body .output .TableWitData .table2 .sec2 .routerCaf .lastDate,
+body .output .TableWitData .table3 .sec .routerCaf .lastDate,
+body .output .TableWitData .table3 .sec2 .routerCaf .lastDate {
   opacity: 0.8;
   font-size: 10px;
 }
+body .output .TableWitData .table .sec,
+body .output .TableWitData .table2 .sec,
+body .output .TableWitData .table3 .sec {
+  border-bottom: none;
+}
+body .output .TableWitData .table .sec2,
+body .output .TableWitData .table2 .sec2,
+body .output .TableWitData .table3 .sec2 {
+  border-top: none;
+}
 body .output .TableWitData .table .footer,
-body .output .TableWitData .table2 .footer {
+body .output .TableWitData .table2 .footer,
+body .output .TableWitData .table3 .footer {
   justify-content: space-around;
   width: 80%;
   border: solid 1px #36393f;
@@ -565,7 +649,8 @@ body .output .TableWitData .table2 .footer {
   padding: 10px;
 }
 body .output .TableWitData .table .footer div span,
-body .output .TableWitData .table2 .footer div span {
+body .output .TableWitData .table2 .footer div span,
+body .output .TableWitData .table3 .footer div span {
   text-align: center;
   width: 80px;
   padding: 5px 0;
@@ -576,7 +661,8 @@ body .output .TableWitData .table2 .footer div span {
   overflow: hidden;
 }
 body .output .TableWitData .table .footer div input,
-body .output .TableWitData .table2 .footer div input {
+body .output .TableWitData .table2 .footer div input,
+body .output .TableWitData .table3 .footer div input {
   padding: 0;
   width: 100%;
   height: 100%;
@@ -586,7 +672,8 @@ body .output .TableWitData .table2 .footer div input {
   background-color: rgba(255, 255, 255, 0);
 }
 body .output .TableWitData .table .buttonDn,
-body .output .TableWitData .table2 .buttonDn {
+body .output .TableWitData .table2 .buttonDn,
+body .output .TableWitData .table3 .buttonDn {
   position: relative;
   width: 100%;
   padding: 10px;
@@ -596,12 +683,13 @@ body .output .TableWitData .table2 .buttonDn {
   align-items: center;
 }
 body .output .TableWitData .table .buttonDn button,
-body .output .TableWitData .table2 .buttonDn button {
+body .output .TableWitData .table2 .buttonDn button,
+body .output .TableWitData .table3 .buttonDn button {
   width: 150px;
   border: none;
   background-color: #28a745;
   padding: 10px 20px;
-  color: #d6d7d9;
+  color: white;
   font-size: 18px;
   font-weight: 600;
   border-radius: 5px;
@@ -609,29 +697,35 @@ body .output .TableWitData .table2 .buttonDn button {
   margin-bottom: 20px;
 }
 body .output .TableWitData .table .buttonDn button:hover,
-body .output .TableWitData .table2 .buttonDn button:hover {
+body .output .TableWitData .table2 .buttonDn button:hover,
+body .output .TableWitData .table3 .buttonDn button:hover {
   opacity: 0.8;
 }
 body .output .TableWitData .table .buttonDn button:disabled,
-body .output .TableWitData .table2 .buttonDn button:disabled {
+body .output .TableWitData .table2 .buttonDn button:disabled,
+body .output .TableWitData .table3 .buttonDn button:disabled {
   cursor: default;
   background-color: rgb(32, 32, 32);
 }
 body .output .TableWitData .table .buttonDn button:disabled:hover,
-body .output .TableWitData .table2 .buttonDn button:disabled:hover {
+body .output .TableWitData .table2 .buttonDn button:disabled:hover,
+body .output .TableWitData .table3 .buttonDn button:disabled:hover {
   opacity: 1;
 }
 body .output .TableWitData .table .buttonDn .buttonsole,
-body .output .TableWitData .table2 .buttonDn .buttonsole {
+body .output .TableWitData .table2 .buttonDn .buttonsole,
+body .output .TableWitData .table3 .buttonDn .buttonsole {
   margin-bottom: 10px;
   width: 200px;
 }
 body .output .TableWitData .table .buttonDn input,
-body .output .TableWitData .table2 .buttonDn input {
+body .output .TableWitData .table2 .buttonDn input,
+body .output .TableWitData .table3 .buttonDn input {
   text-align: center;
 }
 body .output .TableWitData .table .buttonDn .collectSelectName,
-body .output .TableWitData .table2 .buttonDn .collectSelectName {
+body .output .TableWitData .table2 .buttonDn .collectSelectName,
+body .output .TableWitData .table3 .buttonDn .collectSelectName {
   appearance: none;
   height: 25px;
   margin-bottom: 10px;
@@ -643,7 +737,8 @@ body .output .TableWitData .table2 .buttonDn .collectSelectName {
   cursor: pointer;
 }
 body .output .TableWitData .table .buttonDn .icon,
-body .output .TableWitData .table2 .buttonDn .icon {
+body .output .TableWitData .table2 .buttonDn .icon,
+body .output .TableWitData .table3 .buttonDn .icon {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -652,8 +747,12 @@ body .output .TableWitData .table2 .buttonDn .icon {
   cursor: pointer;
 }
 body .output .TableWitData .table .buttonDn .icon:hover,
-body .output .TableWitData .table2 .buttonDn .icon:hover {
+body .output .TableWitData .table2 .buttonDn .icon:hover,
+body .output .TableWitData .table3 .buttonDn .icon:hover {
   opacity: 0.8;
+}
+body .output .TableWitData .table3 {
+  display: none;
 }
 body .output .message {
   width: 100%;

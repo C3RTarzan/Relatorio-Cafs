@@ -89,9 +89,7 @@ body {
                 }
             }
         }
-
-
-        .date {
+        .date, .dateBackLog {
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -103,8 +101,13 @@ body {
                 margin-bottom: 5px;
                 text-align: center;
             }
+            .dataEntry{
+                font-size: 12px;
+                opacity: .8;
+                font-weight: 300;
+                text-align: center;
+            }
         }
-
         .selection {
             justify-content: center;
             align-items: center;
@@ -202,7 +205,6 @@ body {
                 }
             }
         }
-
         .button {
             position: relative;
             width: 100%;
@@ -210,6 +212,7 @@ body {
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            margin-top: 10px;
 
             button {
                 width: 150px;
@@ -352,7 +355,8 @@ body {
             flex-direction: column;
 
             .table,
-            .table2 {
+            .table2,
+            .table3 {
                 width: 100%;
                 height: auto;
                 padding: 20px 10px;
@@ -365,6 +369,18 @@ body {
                 span {
                     color: black;
                     font-weight: 500;
+                }
+                .BgTitle{
+                    background-color: white;
+                    margin: 0;
+                    padding: 0;
+                    width: 80%;
+                    border-left: solid 1px $dark1;
+                    border-right: solid 1px $dark1;
+                    box-shadow: none;
+                    justify-content: center;
+                    align-items: center;
+                    text-align: center;
                 }
 
                 .header {
@@ -382,7 +398,7 @@ body {
                     }
                 }
 
-                .sec {
+                .sec, .sec2 {
                     width: 80%;
                     border: solid 1px $dark1;
                     background-color: white;
@@ -501,6 +517,13 @@ body {
                     }
                 }
 
+                .sec{
+                    border-bottom: none;
+                }
+                .sec2{
+                    border-top: none;
+                }
+
                 .footer {
                     justify-content: space-around;
                     width: 80%;
@@ -548,7 +571,7 @@ body {
                         border: none;
                         background-color: $corverde;
                         padding: 10px 20px;
-                        color: $corspan;
+                        color: white;
                         font-size: 18px;
                         font-weight: 600;
                         border-radius: 5px;
@@ -605,6 +628,9 @@ body {
                         }
                     }
                 }
+            }
+            .table3{
+                display: none;
             }
         }
 
