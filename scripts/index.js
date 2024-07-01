@@ -20,15 +20,7 @@ function getData() {
     }
     const typeCollections = collections.map(str => str.split('\t'))[0].length;
     const typeCollectionsBackLog = collectionsBackLog.map(str => str.split('\t'))[0].length;
-    if(typeCollections !== 3){
-        console.error("Check the data passed, only data with 3 rows (Route ID of the cafe Driver's Name) and 4 (Route ID of the cafe Date/Time Registration Status Driver's Name) are valid.");
-        return
-    }
-
-    if(typeCollectionsBackLog !== 4 && collectionsBackLog.length !== 1){
-        console.error("Check the data passed, only data with 3 rows (Route ID of the cafe Driver's Name) and 4 (Route ID of the cafe Date/Time Registration Status Driver's Name) are valid.");
-        return
-    }
+    
 
     const filter = document.querySelector(".collectSelectType")
 
@@ -48,7 +40,15 @@ function getData() {
         console.error("Invalid invalid data.")
     }
 
+    // if(typeCollections !== 3){
+    //     console.error("Check the data passed, only data with 3 rows (Route ID of the cafe Driver's Name) and 4 (Route ID of the cafe Date/Time Registration Status Driver's Name) are valid.");
+    //     return
+    // }
 
+    // if(typeCollectionsBackLog !== 4 && collectionsBackLog.length !== 1){
+    //     console.error("Check the data passed, only data with 3 rows (Route ID of the cafe Driver's Name) and 4 (Route ID of the cafe Date/Time Registration Status Driver's Name) are valid.");
+    //     return
+    // }
 
     if(filter.value === "typeSelectDriver") {
         typeDriverData(collections, collectionsBackLog)
