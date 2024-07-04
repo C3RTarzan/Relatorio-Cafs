@@ -818,4 +818,21 @@ body {
             cursor: pointer;
         }
     }
+
+    .errorBox{
+        position: absolute;
+        width: 100%;
+        min-height: 50px;
+        text-align: center;
+        background-color: rgb(234, 61, 61);
+        top: 0;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 25px;
+        font-weight: 600;
+        .error{
+
+        }
+    }
 }

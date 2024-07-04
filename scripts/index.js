@@ -1,13 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
     getUser();
-    //handleBoxClicks();
 });
 function getData() {
+    setTitle()
+
     const collectionsElement = document.querySelector(".collections");
     const collectionsBackLogElement = document.querySelector(".collectionsBackLog");
 
     if (!collectionsElement) {
-        console.error("Element with class 'collections' not found.");
+        errorHandling("Element with class 'collections' not found.")
         return;
     }
 
@@ -15,54 +16,47 @@ function getData() {
     const collectionsBackLog = collectionsBackLogElement ? collectionsBackLogElement.value.trim().split('\n') : [];
 
     if (collections.length === 0) {
-        console.error("No data found in the 'collections' element.");
+        errorHandling("No data found in the 'collections' element.");
         return;
     }
     const typeCollections = collections.map(str => str.split('\t'))[0].length;
     const typeCollectionsBackLog = collectionsBackLog.map(str => str.split('\t'))[0].length;
     
 
+    if(typeCollections !== 3 && typeCollectionsBackLog !== 4){
+        
+        return errorHandling("Os campos 'Hoje' ou 'Backlog' devem estar preenchidos.");
+    }
     const filter = document.querySelector(".collectSelectType")
 
     const backlogCheckbox = document.querySelector("#checkBoxBackLog");
     let backlog = backlogCheckbox.checked;
 
     if (!backlog) {
-        setMessage(collections);
+        setMessage(collections, collectionsBackLog);
     } else if (backlog && typeCollectionsBackLog === 4) {
-        setMessageBackLog(collections);
+        setMessageBackLog(collectionsBackLog);
     } else {
         backlog = false;
         backlogCheckbox.checked = false;
+        setMessage(collections, collectionsBackLog);
 
-        setMessage(collections);
-
-        console.error("Invalid invalid data.")
+        errorHandling("Invalid invalid data.")
     }
-
-    // if(typeCollections !== 3){
-    //     console.error("Check the data passed, only data with 3 rows (Route ID of the cafe Driver's Name) and 4 (Route ID of the cafe Date/Time Registration Status Driver's Name) are valid.");
-    //     return
-    // }
-
-    // if(typeCollectionsBackLog !== 4 && collectionsBackLog.length !== 1){
-    //     console.error("Check the data passed, only data with 3 rows (Route ID of the cafe Driver's Name) and 4 (Route ID of the cafe Date/Time Registration Status Driver's Name) are valid.");
-    //     return
-    // }
 
     if(filter.value === "typeSelectDriver") {
         typeDriverData(collections, collectionsBackLog)
     }else if(filter.value === "typeSelectRouter"){
         typeRouterData(collections, collectionsBackLog)
     }else{
-        return console.error("Invalid invalid data.")
+        return errorHandling("Invalid invalid data.") 
     }
     
 }
 function typeDriverData(collections, collectionsBackLog) {
     const items = processData(collections);
     if (!items || items.length === 0) {
-        console.error("No items processed.");
+        errorHandling("No items processed.");
         return;
     }
 
@@ -78,7 +72,7 @@ function typeDriverData(collections, collectionsBackLog) {
     if (dateBackLog.length !== 0 || dateBackLog !== "") {
         const itemsRouter = processData(collections);
         if (!itemsRouter || itemsRouter.length === 0) {
-            console.error("No items processed.");
+            errorHandling("No items processed.");
             return;
         }
 
@@ -89,7 +83,7 @@ function typeDriverData(collections, collectionsBackLog) {
 
         const itemsBackLog = processDataRouter(collectionsBackLog);
         if (!itemsBackLog || itemsBackLog.length === 0) {
-            console.error("No items processed.");
+            errorHandling("No items processed.");
             return;
         }
 
@@ -105,7 +99,7 @@ function typeDriverData(collections, collectionsBackLog) {
 function typeRouterData(collections, collectionsBackLog) {
     const items = processData(collections);
     if (!items || items.length === 0) {
-        console.error("No items processed.");
+        errorHandling("No items processed.");
         return;
     }
 
@@ -120,7 +114,7 @@ function typeRouterData(collections, collectionsBackLog) {
     if (dateBackLog.length !== 0 || dateBackLog !== "") {
         const itemsBackLog = processDataRouter(collectionsBackLog);
         if (!itemsBackLog || itemsBackLog.length === 0) {
-            console.error("No items processed.");
+            errorHandling("No items processed.");
             return;
         }
 
@@ -128,7 +122,7 @@ function typeRouterData(collections, collectionsBackLog) {
         categorizeDrivers(groupedByRouterBackLog);
         const { groupedByRouter: localGroupedByRouterBackLog } = checkAndRemoveRouter({ ...groupedByRouterBackLog });
         const sortedGroupedByRouterBackLog = sortObjectByKey(localGroupedByRouterBackLog);
-        renderDataToHtmlRouter3(sortedGroupedByRouter, sortedGroupedByRouterBackLog);
+        renderDataToHtmlRouter3(sortedGroupedByRouter, sortedGroupedByRouterBackLog, itemsBackLog);
     } else {
         const secElement = document.querySelector(".table3");
         secElement.style.display = 'none';
@@ -516,7 +510,7 @@ function renderDataToHtml3(driverCounts, groupedByName, localGroupedByRouter, it
     renderDrivers(leftDrivers, leftBox);
     renderDrivers(rightDrivers, rightBox);
 
-    for (const router in  sortedGroupedByRouterBackLogRouter) {
+    for (const router in  localGroupedByRouter) {
         for (const driver in localGroupedByRouter[router]) {
             for (const caf in localGroupedByRouter[router][driver]) {
                 totalPieces += localGroupedByRouter[router][driver][caf]; // Somar a quantidade de peças
@@ -531,7 +525,7 @@ function renderDataToHtml3(driverCounts, groupedByName, localGroupedByRouter, it
 
     generateImage("table3"); // Atualizar a imagem
 }
-function renderDataToHtml3BackLog(groupedByRouter, items, sortedGroupedByRouterBackLogRouter) {
+function renderDataToHtml3BackLog(groupedByRouter, items) {
     const leftBox = document.querySelector(".table3 .sec2 .leftBox");
     const rightBox = document.querySelector(".table3 .sec2 .rightBox");
 
@@ -760,13 +754,13 @@ function renderDataToHtmlRouter2(groupedByRouter) {
 
     generateImage("table2"); // Atualizar a imagem
 }
-function renderDataToHtmlRouter3(groupedByRouter, groupedByRouterBackLog) {
+function renderDataToHtmlRouter3(groupedByRouter, groupedByRouterBackLog, itemsBackLog) {
     const secElement = document.querySelector(".table3");
     secElement.style.display = 'flex';
     const leftBox = secElement.querySelector(".sec .leftBox");
     const rightBox = secElement.querySelector(".sec .rightBox");
 
-    renderDataToHtmlRouter3BackLog(groupedByRouterBackLog)
+    renderDataToHtmlRouter3BackLog(groupedByRouterBackLog, itemsBackLog)
 
     // Limpar qualquer conteúdo existente
     leftBox.innerHTML = '';
@@ -856,7 +850,7 @@ function renderDataToHtmlRouter3(groupedByRouter, groupedByRouterBackLog) {
 
     generateImage("table3");
 }
-function renderDataToHtmlRouter3BackLog(groupedByRouter) {
+function renderDataToHtmlRouter3BackLog(groupedByRouter, items) {
     const leftBox = document.querySelector(".table3 .sec2 .leftBox");
     const rightBox = document.querySelector(".table3 .sec2 .rightBox");
 
@@ -888,8 +882,10 @@ function renderDataToHtmlRouter3BackLog(groupedByRouter) {
 
                 // Procurar o objeto correspondente em items
                 const total = groupedByRouter[router][driver][caf];
+                const item = items.find(item => item.cafID === caf);
+                const formattedDate = item ? item.lastDate.split(' ')[0] : '';
 
-                cafDiv.innerHTML = `${caf} = ${total} `;
+                cafDiv.innerHTML = `<span class="lastDate">(${formattedDate})</span> ${caf} = ${total} `;
                 driverDiv.appendChild(cafDiv);
             }
 
@@ -1019,7 +1015,7 @@ async function generateImage(className) {
     } catch (error) {
         // Restore the button if an error occurs
         button.style.display = "flex";
-        console.error('An error occurred while generating the image:', error);
+        errorHandling('An error occurred while generating the image', error);
     }
 }
 function configOpen() {
@@ -1117,8 +1113,6 @@ function copy() {
     const copy = document.querySelector('.copy')
     const msg = msgcopy
 
-
-
     const elementoTextCopy = msg.textContent.replace(/^\s+/gm, '').replace(/br/g, '\n');
 
     navigator.clipboard.writeText(elementoTextCopy)
@@ -1129,24 +1123,21 @@ function copy() {
             }, 500)
         })
         .catch((err) => {
-            // Ocorreu um erro ao copiar o texto
-            console.error('Erro ao copiar o texto:', err);
+            errorHandling('Erro ao copiar o texto ', err)
         });
 }
 function handleBoxClicks() {
     const mainBoxes = document.querySelectorAll('.mainBox');
 
     if (mainBoxes.length === 0) {
-        console.error("No .mainBox elements found!");
-        return;
+        return errorHandling("No .mainBox elements found!");;
     }
 
     mainBoxes.forEach(mainBox => {
         const icon = mainBox.querySelector('.icon.iconOpen');
 
         if (!icon) {
-            console.error("Icon with class .icon.iconOpen not found inside .mainBox!");
-            return;
+            return errorHandling("Icon with class .icon.iconOpen not found inside .mainBox!");
         }
 
         // Initialize the icon display to ensure a known value
@@ -1161,44 +1152,81 @@ function handleBoxClicks() {
         });
     });
 }
-function setMessage(itemList) {
-    // Formata a lista de itens
+function setMessage(itemList, itemListBackLog) {
+
+    defineTable(false)
+    // Creating message variable
+    let mensagemHTML
+
+    // Select from the shift
+    const shift = responsibleData("collectShift")
+    const data = responsibleData("collectLPDOrCard")
+    
+    // Format the item lists
     const itens = formatList(itemList);
+    const itensBackLog = formatList(itemListBackLog)
 
-    // Separa os itens em "Interior" e "Não Interior"
-    const { naoInterior, interior } = filterAndSeparateItems(itens);
+    // Create message BackLog
+    let messagePriority = ''
+    if(itemListBackLog[0] !== ''){
+        messagePriority = getDelayedCafs(itemListBackLog)
+    }
 
-    // Quantidade de cafIDs únicos para Não Interior
-    const quantidadeCafIDsNaoInterior = countUniqueCafIDs(naoInterior);
-    // Quantidade total de routers para Não Interior
-    const quantidadeRoutersNaoInterior = naoInterior.length;
+    // separate countryside from not countryside 
+    const { notCountryside, countryside } = filterAndSeparateItems(itens);
+    const { notCountryside: notCountrysideBackLog } = filterAndSeparateItems(itensBackLog);
+    
 
-    // Quantidade de cafIDs únicos para Interior
-    const quantidadeCafIDsInterior = countUniqueCafIDs(interior);
-    // Quantidade total de routers para Interior
-    const quantidadeRoutersInterior = interior.length;
+    // Total amount of Caf
+    const amountCafNotCountryside = countUniqueCafIDs(notCountryside);
+    const amountCafNotCountrysideBackLog = countUniqueCafIDs(notCountrysideBackLog);
+    
+    // Total amount of Router
+    const amountRoutersNotCountryside = notCountryside.length;
+    const amountRoutersNotCountrysideBackLog = notCountrysideBackLog.length;
 
-    // Transformar rotas de Interior
-    const rotasInterior = transformInteriorRoutes(interior);
+    // // Amount of Countryside
+    let amountCafCountryside
+    let amountRoutersCountryside
+    if (countryside.length > 0 && !countryside[0].router && countryside[0].cafID === undefined && countryside[0].driverName === undefined) {
+        amountCafCountryside = 0
+        amountRoutersCountryside = 0
+    }else{
+        amountCafCountryside = countUniqueCafIDs(countryside);
+        amountRoutersCountryside = countryside.length;
+    }
 
-    // Obtém a data atual
-    const dataAtual = new Date().toLocaleDateString();
+    // Transform routes Countryside
+    const RouterCountryside = transformInteriorRoutes(countryside);
+
+    // Gets the current date
+    const currentDate = new Date().toLocaleDateString();
+
 
     const user = document.querySelector(".nameUser").value;
 
-    // Constrói a mensagem HTML de forma mais organizada
-    const mensagemHTML = `
+
+    // Builds the HTML message in a more organized way
+    const typeItensBackLog = itemListBackLog.map(str => str.split('\t'))[0].length;
+
+    if(typeItensBackLog === 4){
+        mensagemHTML = `
         <div class="msg">
             <span class="text textcopy withGraphic" onclick="copy()" style="white-space: pre-line;">
-                Boa noite.<span style="display: none;">br</span>
+                *Caf's de ${data} feitas pelo ${shift}° turno*<span style="display: none;">br</span>
 
-                *Caf's de cards feitas pelo 3° turno*<span style="display: none;">br</span>
+                Hoje (*${currentDate}*), foram feitas *${amountCafNotCountryside}* caf's, movimentado 
+                *${amountRoutersNotCountryside}* volumes para serem expedidos.<span style="display: none;">br</span>
 
-                Hoje (*${dataAtual}*), foram feitas *${quantidadeCafIDsNaoInterior}* caf's, movimentado 
-                *${quantidadeRoutersNaoInterior}* cartões para serem expedidos.<span style="display: none;">br</span>
+                Interior foram feitos *${RouterCountryside}*, sendo *${amountCafCountryside}* caf's,
+                movimentando um total de *${amountRoutersCountryside}* volumes.<span style="display: none;">br</span>
 
-                Interior foram feitos *${rotasInterior}*, sendo *${quantidadeCafIDsInterior}* caf's,
-                movimentando um total de *${quantidadeRoutersInterior}* cartões.<span style="display: none;">br</span>
+                *BackLog de CARDS.*<span style="display: none;">br</span>
+
+                Temos um total de *${amountCafNotCountrysideBackLog}* caf's, movimentado 
+                *${amountRoutersNotCountrysideBackLog}* volumes para serem expedidos com prioridade.<span style="display: none;">br</span>
+
+                ${messagePriority}
 
                 @Maria @Janaína @Emanuel @Emanuel @Wagner @Wellington<span style="display: none;">br</span>
 
@@ -1206,55 +1234,86 @@ function setMessage(itemList) {
             </span>
             <span class="copy" style="position: absolute;">Copiado</span>
         </div>
-    `;
+        `;
+    }else{
+        if(amountCafCountryside > 0){
+            mensagemHTML = `
+                <div class="msg">
+                    <span class="text textcopy withGraphic" onclick="copy()" style="white-space: pre-line;">
+                        *Caf's de ${data} feitas pelo ${shift}° turno*<span style="display: none;">br</span>
+        
+                        Hoje (*${currentDate}*), foram feitas *${amountCafNotCountryside}* caf's, movimentado 
+                        *${amountRoutersNotCountryside}* volumes para serem expedidos.<span style="display: none;">br</span>
+        
+                        Interior foram feitos *${RouterCountryside}*, sendo *${amountCafCountryside}* caf's,
+                        movimentando um total de *${amountRoutersCountryside}* volumes.<span style="display: none;">br</span>
+        
+                        @Maria @Janaína @Emanuel @Emanuel @Wagner @Wellington<span style="display: none;">br</span>
+        
+                        ~${user}.
+                    </span>
+                    <span class="copy" style="position: absolute;">Copiado</span>
+                </div>
+            `;
+        }else{
+            mensagemHTML = `
+            <div class="msg">
+                <span class="text textcopy withGraphic" onclick="copy()" style="white-space: pre-line;">
+                    *Caf's de ${data} feitas pelo ${shift}° turno*<span style="display: none;">br</span>
+    
+                    Hoje (*${currentDate}*), foram feitas *${amountCafNotCountryside}* caf's, movimentado 
+                    *${amountRoutersNotCountryside}* volumes para serem expedidos.<span style="display: none;">br</span>
+    
+                    @Maria @Janaína @Emanuel @Emanuel @Wagner @Wellington<span style="display: none;">br</span>
+    
+                    ~${user}.
+                </span>
+                <span class="copy" style="position: absolute;">Copiado</span>
+            </div>
+        `;
+        }
+    }
 
-    // Seleciona o elemento onde você deseja inserir a mensagem
+    // Create the message
     const mensagemContainer = document.querySelector(".msg");
 
-    // Insere a mensagem HTML dentro do elemento selecionado
     if (mensagemContainer) {
         mensagemContainer.innerHTML = mensagemHTML;
     } else {
-        console.error("Elemento .msg não encontrado para inserir a mensagem.");
+        errorHandling("Elemento .msg não encontrado para inserir a mensagem.");
     }
 }
 function setMessageBackLog(itemList){
+
+    defineTable(true)
+
+    const data = responsibleData("collectLPDOrCard")
     // Formata a lista de itens
     const itens = formatList(itemList);
 
     // Separa os itens em "Interior" e "Não Interior"
-    const { naoInterior, interior } = filterAndSeparateItems(itens);
+    const { notCountryside } = filterAndSeparateItems(itens);
 
     // Quantidade de cafIDs únicos para Não Interior
-    const quantidadeCafIDsNaoInterior = countUniqueCafIDs(naoInterior);
+    const quantidadeCafIDsNaoInterior = countUniqueCafIDs(notCountryside);
+
     // Quantidade total de routers para Não Interior
-    const quantidadeRoutersNaoInterior = naoInterior.length;
-
-    // Quantidade de cafIDs únicos para Interior
-    const quantidadeCafIDsInterior = countUniqueCafIDs(interior);
-    // Quantidade total de routers para Interior
-    const quantidadeRoutersInterior = interior.length;
-
-    // Transformar rotas de Interior
-    const rotasInterior = transformInteriorRoutes(interior);
-
-    // Obtém a data atual
-    const dataAtual = new Date().toLocaleDateString();
-
+    const quantidadeRoutersNaoInterior = notCountryside.length;
+    
     const user = document.querySelector(".nameUser").value;
+
+    const messagePriority = getDelayedCafs(itemList)
 
     // Constrói a mensagem HTML de forma mais organizada
     const mensagemHTML = `
         <div class="msg">
             <span class="text textcopy withGraphic" onclick="copy()" style="white-space: pre-line;">
-                *BackLog de CARDS.*<span style="display: none;">br</span>
+                *BackLog de ${data}.*<span style="display: none;">br</span>
 
                 Temos um total de *${quantidadeCafIDsNaoInterior}* caf's, movimentado 
-                *${quantidadeRoutersNaoInterior}* cartões para serem expedidos com prioridade.<span style="display: none;">br</span>
+                *${quantidadeRoutersNaoInterior}* volumes para serem expedidos com prioridade.<span style="display: none;">br</span>
 
-                Dar atenção as Caf's:
-                CAF: 1234567 ( *DATA* ).
-                CAF: 1234567 ( *DATA* ).<span style="display: none;">br</span>
+                ${messagePriority}
 
                 @Maria @Janaína @Emanuel @Emanuel @Wagner @Wellington<span style="display: none;">br</span>
 
@@ -1271,12 +1330,12 @@ function setMessageBackLog(itemList){
     if (mensagemContainer) {
         mensagemContainer.innerHTML = mensagemHTML;
     } else {
-        console.error("Elemento .msg não encontrado para inserir a mensagem.");
+        errorHandling("Elemento .msg não encontrado para inserir a mensagem.");
     }
 }
 function filterAndSeparateItems(itemList) {
-    const naoInterior = [];
-    const interior = [];
+    const notCountryside = [];
+    const countryside = [];
 
     const letrasIndesejadas = ['W', 'L', 'V', 'S', 'Q', 'N'];
 
@@ -1287,7 +1346,7 @@ function filterAndSeparateItems(itemList) {
         // Encontra o valor dentro dos colchetes no router
         const regexResult = router.match(/\[(.*?)\]/);
         if (!regexResult) {
-            interior.push(item); // Se não encontrar valor dentro dos colchetes, considera como Interior
+            countryside.push(item); // Se não encontrar valor dentro dos colchetes, considera como countryside
             return;
         }
         
@@ -1295,14 +1354,13 @@ function filterAndSeparateItems(itemList) {
 
         // Verifica se o router começa com as letras indesejadas ou se não tem valor dentro dos colchetes
         if (letrasIndesejadas.some(letra => valorDentroColchetes.startsWith(letra)) || !valorDentroColchetes) {
-            interior.push(item);
+            countryside.push(item);
         } else {
-            item.routerValor = valorDentroColchetes; // Adiciona o valor dentro dos colchetes ao item
-            naoInterior.push(item);
+            notCountryside.push(item);
         }
     });
 
-    return { naoInterior, interior };
+    return { notCountryside, countryside };
 }
 function transformInteriorRoutes(interiorList) {
     const transformMap = {
@@ -1359,5 +1417,150 @@ function BackLogSetImage(className){
     }
     
 }
+function responsibleData(name){
+    const data = document.querySelector(`.${name}`);
+    return data.value
+}
+function errorHandling(errMsg, error) { 
+    const body = document.querySelector("body");
+
+    const boxBC = document.createElement("div");
+    boxBC.classList.add("errorBox");
+
+    const spanErr = document.createElement("span");
+    spanErr.classList.add("error");
+    spanErr.textContent = errMsg;
+
+    boxBC.appendChild(spanErr);
+
+    body.appendChild(boxBC);
+
+    setTimeout(() => {
+        boxBC.remove();
+    }, 2000);
+    
+    if (error) {
+        console.error('Ocorreu um erro: ', error);
+    }
+}
+function setTitle(){
+    let data = responsibleData("collectLPDOrCard")
+
+    const span = document.querySelector(".tableReport")
+    const spanCountryside = document.querySelector(".tableReportCountryside")
+    const spanCountrysideBackLog = document.querySelector(".tableReportBackLog")
+
+    if(data === 'Cards'){
+        data = "Card's"
+    }
+
+    span.innerHTML = `Relatorio ${data} Local / Metropolitano - Caf's`
+    spanCountryside.innerHTML = `Relatorio ${data} Interior - Caf's`
+    spanCountrysideBackLog.innerHTML = `Relatorio ${data} - Caf's`
+}
+function GetPriority(items) {
+    let results = [];
+
+    // Process each item in the list
+    items.forEach(item => {
+        // Split the string based on tabs and spaces
+        let parts = item.split(/\t/);
+        
+        // Extract desired values
+        let caf = parts[1]; // CAF
+        let datetime = parts[2]; // Date and Time
+        
+        // Extract only the date (removing the time part)
+        let dateOnly = datetime.split(' ')[0]; // '03/06/2024'
+
+        // Store the results in an object, array, or other structure as needed
+        results.push({ caf, date: dateOnly });
+    });
+
+    return results;
+}
+function compareDates(a, b) {
+    // Convert date strings to Date objects for comparison
+    let dateA = new Date(a.date);
+    let dateB = new Date(b.date);
+
+    // Compare dates (invert order to show most delayed first)
+    if (dateA > dateB) {
+        return 1; // a is more recent, so should come after b
+    } else if (dateA < dateB) {
+        return -1; // b is more recent, so should come after a
+    } else {
+        return 0; // dates are equal
+    }
+}
+function getDelayedCafs(items) {
+    const today = formatDate(new Date()); // Obtém e formata a data atual
+    let results = [];
+
+    // Filtra os itens prioritários com datas
+    let priorityItems = GetPriority(items);
+
+    // Filtra os itens que estão atrasados (mais de 2 dias)
+    let delayedItems = priorityItems.filter(item => {
+        let date = item.date;
+        let delay = calculateDaysDifference(today, date);
+        return delay >= 2; // Apenas datas até hoje e com pelo menos 2 dias de atraso
+    });
+
+    // Ordena os itens atrasados por data (mais atrasado primeiro)
+    delayedItems.sort(compareDates);
+
+    // Formata os itens atrasados em uma mensagem
+    delayedItems.forEach(item => {
+        results.push(`CAF: ${item.caf} (${item.date})`);
+    });
+
+    let message
+    if(results.length === 0){
+        message = ""
+    }else{
+        message = "Dar atenção às Caf's:\n" + results.join("\n");
+        message += '<span style="display: none;">br</span>'
+    }
+    // Junta os resultados com quebra de linha para melhor formatação
+
+    return message;
+}
+function calculateDaysDifference(date1, date2) {
+    // Parse das datas do formato dd/mm/yyyy para objetos Date
+    var partsDate1 = date1.split('/');
+    var partsDate2 = date2.split('/');
+    var dateObj1 = new Date(partsDate1[2], partsDate1[1] - 1, partsDate1[0]);
+    var dateObj2 = new Date(partsDate2[2], partsDate2[1] - 1, partsDate2[0]);
+
+    // Calcula a diferença em milissegundos
+    var difference = dateObj1.getTime() - dateObj2.getTime();
+
+    // Converte a diferença de milissegundos para dias
+    var differenceInDays = Math.floor(difference / (1000 * 60 * 60 * 24));
+
+    return differenceInDays;
+}
+function formatDate(date) {
+    let dd = String(date.getDate()).padStart(2, '0');
+    let mm = String(date.getMonth() + 1).padStart(2, '0'); // Janeiro é 0!
+    let yyyy = date.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+}
+function defineTable(value){
+    const sec = document.querySelector('.table3 .sec')
+    const span = document.querySelector('.table3 .BgTitle')
+
+    if(value){
+        sec.style.display = 'none'
+        span.style.display = 'none'
+    }else{
+        sec.style.display = 'flex'
+        span.style.display = 'flex'
+    }
+}
+
+
+
 
 
