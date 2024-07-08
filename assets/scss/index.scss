@@ -301,11 +301,13 @@ body {
                     flex-direction: column;
                     align-items: center;
                     width: 30%;
-
                     .titleBox {
                         padding: 10px;
-
+                        min-height: 70px;
+                        justify-content: center;
+                        align-items: center;
                         span {
+                            text-align: center;
                             font-size: 20px;
                             font-weight: 600;
                             border: none;
@@ -527,10 +529,10 @@ body {
                 .footer {
                     justify-content: space-around;
                     width: 80%;
-                    border: solid 1px $dark1;
                     background-color: white;
                     padding: 10px;
-
+                    border: solid 1px $dark1;
+                    margin-bottom: 5px;
                     div {
                         span {}
 

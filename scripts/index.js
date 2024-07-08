@@ -27,6 +27,10 @@ function getData() {
         
         return errorHandling("Os campos 'Hoje' ou 'Backlog' devem estar preenchidos.");
     }
+
+    if(typeCollections === 3 || typeCollectionsBackLog === 4){
+        categorizeDrivers(collections, collectionsBackLog)
+    }
     const filter = document.querySelector(".collectSelectType")
 
     const backlogCheckbox = document.querySelector("#checkBoxBackLog");
@@ -62,7 +66,6 @@ function typeDriverData(collections, collectionsBackLog) {
 
     const driverCounts = countDriverNames(items);
     const groupedByName = groupCafsAndRoutersByName(items);
-    categorizeDrivers(groupedByName);
 
     const { dados: localGroupedByName, removedDrivers } = checkAndRemoveDrivers({ ...groupedByName });
     renderDataToHtml(driverCounts, localGroupedByName);
@@ -76,11 +79,6 @@ function typeDriverData(collections, collectionsBackLog) {
             return;
         }
 
-        const groupedByRouterRouter = groupCafsAndNameByRouters(itemsRouter);
-        categorizeDrivers(groupedByRouterRouter);
-        const { groupedByRouter: localGroupedByRouterRouter } = checkAndRemoveRouter({ ...groupedByRouterRouter });
-        const sortedGroupedByRouterRouter = sortObjectByKey(localGroupedByRouterRouter);
-
         const itemsBackLog = processDataRouter(collectionsBackLog);
         if (!itemsBackLog || itemsBackLog.length === 0) {
             errorHandling("No items processed.");
@@ -88,9 +86,8 @@ function typeDriverData(collections, collectionsBackLog) {
         }
 
         const groupedByRouter = groupCafsAndNameByRouters(itemsBackLog);
-        categorizeDrivers(groupedByRouter);
         const { groupedByRouter: localGroupedByRouter } = checkAndRemoveRouter({ ...groupedByRouter });
-        renderDataToHtml3(driverCounts, localGroupedByName, localGroupedByRouter, itemsBackLog, sortedGroupedByRouterRouter);
+        renderDataToHtml3(driverCounts, localGroupedByName, localGroupedByRouter, itemsBackLog);
     } else {
         const secElement = document.querySelector(".table3");
         secElement.style.display = 'none';
@@ -104,7 +101,6 @@ function typeRouterData(collections, collectionsBackLog) {
     }
 
     const groupedByRouter = groupCafsAndNameByRouters(items);
-    categorizeDrivers(groupedByRouter);
     const { groupedByRouter: localGroupedByRouter, removedRouters } = checkAndRemoveRouter({ ...groupedByRouter });
     const sortedGroupedByRouter = sortObjectByKey(localGroupedByRouter);
     renderDataToHtmlRouter(sortedGroupedByRouter);
@@ -119,7 +115,6 @@ function typeRouterData(collections, collectionsBackLog) {
         }
 
         const groupedByRouterBackLog = groupCafsAndNameByRouters(itemsBackLog);
-        categorizeDrivers(groupedByRouterBackLog);
         const { groupedByRouter: localGroupedByRouterBackLog } = checkAndRemoveRouter({ ...groupedByRouterBackLog });
         const sortedGroupedByRouterBackLog = sortObjectByKey(localGroupedByRouterBackLog);
         renderDataToHtmlRouter3(sortedGroupedByRouter, sortedGroupedByRouterBackLog, itemsBackLog);
@@ -175,36 +170,60 @@ function countDriverNames(items) {
     return driverCounts;
 
 }
-function categorizeDrivers(data) {
-    const metropolitanas = ["EUS", "AQU", "HOR", "PCJ", "ITA", "MRC", "MA1", "MA2", "MR1", "MR2", "CA1", "CA2", "PCT"];
-    const interior = ["S", "V", "W", "L", "Q", "N"];
+function categorizeDrivers(data = [], dataBackLog = []) {
+    const metropolitan = ["EUS", "AQU", "HOR", "PCJ", "ITA", "MRC", "MA1", "MA2", "MR1", "MR2", "CA1", "CA2", "PCT"];
+    const countryside = ["S", "V", "W", "L", "Q", "N"];
 
-    const counts = { metropolitanasCount: 0, interiorCount: 0, localCount: 0 };
-    const countsCaf = { metropolitanasCountCaf: 0, interiorCountCaf: 0, localCountCaf: 0 };
+    let counts = {
+        localCount: 0,
+        metropolitanCount: 0,
+        interiorCount: 0
+    };
 
-    for (const driverName in data) {
-        for (const cafID in data[driverName]) {
-            for (const router in data[driverName][cafID]) {
-                const category = router.substring(0, 3);
-                if (metropolitanas.includes(category)) {
-                    counts.metropolitanasCount += data[driverName][cafID][router];
-                    countsCaf.metropolitanasCountCaf++;
-                } else if (interior.some(prefix => router.startsWith(prefix))) {
-                    counts.interiorCount += data[driverName][cafID][router];
-                    countsCaf.interiorCountCaf++;
-                } else {
-                    counts.localCount += data[driverName][cafID][router];
-                    countsCaf.localCountCaf++;
-                }
+    let countsCaf = {
+        localCountCaf: 0,
+        metropolitanCountCaf: 0,
+        interiorCountCaf: 0
+    };
+
+    let cafSet = new Set();
+
+    const combinedData = data.concat(dataBackLog);
+
+    combinedData.forEach(entry => {
+        if (!entry) return;
+
+        const [routerStr, caf] = entry.split('\t');
+        const router = routerStr.match(/\[(.*?)\]/)[1];
+
+        // Categorize router
+        if (countryside.includes(router[0])) {
+            counts.interiorCount++;
+        } else if (metropolitan.includes(router)) {
+            counts.metropolitanCount++;
+        } else {
+            counts.localCount++;
+        }
+
+        // Categorize CAFs, ensuring unique CAF-router pairs
+        if (!cafSet.has(caf)) {
+            cafSet.add(caf);
+
+            if (countryside.includes(router[0])) {
+                countsCaf.interiorCountCaf++;
+            } else if (metropolitan.includes(router)) {
+                countsCaf.metropolitanCountCaf++;
+            } else {
+                countsCaf.localCountCaf++;
             }
         }
-    }
+    });
 
     document.querySelector(".locCaf").value = countsCaf.localCountCaf;
-    document.querySelector(".metCaf").value = countsCaf.metropolitanasCountCaf;
+    document.querySelector(".metCaf").value = countsCaf.metropolitanCountCaf;
     document.querySelector(".intCaf").value = countsCaf.interiorCountCaf;
     document.querySelector(".locRout").value = counts.localCount;
-    document.querySelector(".metRout").value = counts.metropolitanasCount;
+    document.querySelector(".metRout").value = counts.metropolitanCount;
     document.querySelector(".intRout").value = counts.interiorCount;
 }
 function groupCafsAndRoutersByName(items) {
@@ -230,6 +249,7 @@ function groupCafsAndNameByRouters(items) {
         const router = routerMatch ? routerMatch[1] : null;
         if (!router) {
             console.warn("Router format unexpected:", item.router);
+            //errorHandling("Router format unexpected:", item.router)
             return;
         }
 
@@ -445,13 +465,13 @@ function renderDataToHtml2(driverCounts, groupedByName) {
 
     generateImage("table2"); // Atualizar a imagem
 }
-function renderDataToHtml3(driverCounts, groupedByName, localGroupedByRouter, itemsBakcLog, sortedGroupedByRouterBackLogRouter) {
+function renderDataToHtml3(driverCounts, groupedByName, localGroupedByRouter, itemsBakcLog) {
     const secElement = document.querySelector(".table3");
     secElement.style.display = 'flex';
     const leftBox = secElement.querySelector(".sec .leftBox");
     const rightBox = secElement.querySelector(".sec .rightBox");
 
-    renderDataToHtml3BackLog(localGroupedByRouter, itemsBakcLog, sortedGroupedByRouterBackLogRouter)
+    renderDataToHtml3BackLog(localGroupedByRouter, itemsBakcLog)
 
     // Limpar qualquer conteúdo existente
     leftBox.innerHTML = '';
@@ -1215,20 +1235,20 @@ function setMessage(itemList, itemListBackLog) {
             <span class="text textcopy withGraphic" onclick="copy()" style="white-space: pre-line;">
                 *Caf's de ${data} feitas pelo ${shift}° turno*<span style="display: none;">br</span>
 
-                Hoje (*${currentDate}*), foram feitas *${amountCafNotCountryside}* caf's, movimentado 
+                Hoje (*${currentDate}*), temos *${amountCafNotCountryside}* caf's, movimentado 
                 *${amountRoutersNotCountryside}* volumes para serem expedidos.<span style="display: none;">br</span>
 
                 Interior foram feitos *${RouterCountryside}*, sendo *${amountCafCountryside}* caf's,
                 movimentando um total de *${amountRoutersCountryside}* volumes.<span style="display: none;">br</span>
 
-                *BackLog de CARDS.*<span style="display: none;">br</span>
+                *BackLog ${data}*<span style="display: none;">br</span>
 
                 Temos um total de *${amountCafNotCountrysideBackLog}* caf's, movimentado 
                 *${amountRoutersNotCountrysideBackLog}* volumes para serem expedidos com prioridade.<span style="display: none;">br</span>
 
                 ${messagePriority}
 
-                @Maria @Janaína @Emanuel @Emanuel @Wagner @Wellington<span style="display: none;">br</span>
+                @Maria @Jana @Emanuel @Emanuel @Wagner @Wellington<span style="display: none;">br</span>
 
                 ~${user}.
             </span>
@@ -1242,13 +1262,13 @@ function setMessage(itemList, itemListBackLog) {
                     <span class="text textcopy withGraphic" onclick="copy()" style="white-space: pre-line;">
                         *Caf's de ${data} feitas pelo ${shift}° turno*<span style="display: none;">br</span>
         
-                        Hoje (*${currentDate}*), foram feitas *${amountCafNotCountryside}* caf's, movimentado 
+                        Hoje (*${currentDate}*), temos *${amountCafNotCountryside}* caf's, movimentado 
                         *${amountRoutersNotCountryside}* volumes para serem expedidos.<span style="display: none;">br</span>
         
                         Interior foram feitos *${RouterCountryside}*, sendo *${amountCafCountryside}* caf's,
                         movimentando um total de *${amountRoutersCountryside}* volumes.<span style="display: none;">br</span>
         
-                        @Maria @Janaína @Emanuel @Emanuel @Wagner @Wellington<span style="display: none;">br</span>
+                        @Maria @Jana @Emanuel @Emanuel @Wagner @Wellington<span style="display: none;">br</span>
         
                         ~${user}.
                     </span>
@@ -1261,10 +1281,10 @@ function setMessage(itemList, itemListBackLog) {
                 <span class="text textcopy withGraphic" onclick="copy()" style="white-space: pre-line;">
                     *Caf's de ${data} feitas pelo ${shift}° turno*<span style="display: none;">br</span>
     
-                    Hoje (*${currentDate}*), foram feitas *${amountCafNotCountryside}* caf's, movimentado 
+                    Hoje (*${currentDate}*), temos *${amountCafNotCountryside}* caf's, movimentado 
                     *${amountRoutersNotCountryside}* volumes para serem expedidos.<span style="display: none;">br</span>
     
-                    @Maria @Janaína @Emanuel @Emanuel @Wagner @Wellington<span style="display: none;">br</span>
+                    @Maria @Jana @Emanuel @Emanuel @Wagner @Wellington<span style="display: none;">br</span>
     
                     ~${user}.
                 </span>
@@ -1315,7 +1335,7 @@ function setMessageBackLog(itemList){
 
                 ${messagePriority}
 
-                @Maria @Janaína @Emanuel @Emanuel @Wagner @Wellington<span style="display: none;">br</span>
+                @Maria @Jana @Emanuel @Emanuel @Wagner @Wellington<span style="display: none;">br</span>
 
                 ~${user}.
             </span>
@@ -1469,12 +1489,13 @@ function GetPriority(items) {
         // Extract desired values
         let caf = parts[1]; // CAF
         let datetime = parts[2]; // Date and Time
+        let router = parts[0]
         
         // Extract only the date (removing the time part)
         let dateOnly = datetime.split(' ')[0]; // '03/06/2024'
 
         // Store the results in an object, array, or other structure as needed
-        results.push({ caf, date: dateOnly });
+        results.push({ caf, date: dateOnly, router });
     });
 
     return results;
@@ -1497,12 +1518,15 @@ function getDelayedCafs(items) {
     const today = formatDate(new Date()); // Obtém e formata a data atual
     let results = [];
 
+    
     // Filtra os itens prioritários com datas
     let priorityItems = GetPriority(items);
+    let filterItens = processItems(priorityItems);
 
     // Filtra os itens que estão atrasados (mais de 2 dias)
-    let delayedItems = priorityItems.filter(item => {
+    let delayedItems = filterItens.filter(item => {
         let date = item.date;
+        let router = item.router
         let delay = calculateDaysDifference(today, date);
         return delay >= 2; // Apenas datas até hoje e com pelo menos 2 dias de atraso
     });
@@ -1512,7 +1536,7 @@ function getDelayedCafs(items) {
 
     // Formata os itens atrasados em uma mensagem
     delayedItems.forEach(item => {
-        results.push(`CAF: ${item.caf} (${item.date})`);
+        results.push(`CAF: ${item.caf} (${item.date}) *${item.router}*`);
     });
 
     let message
@@ -1525,6 +1549,43 @@ function getDelayedCafs(items) {
     // Junta os resultados com quebra de linha para melhor formatação
 
     return message;
+}
+function processItems(items) {
+    // Step 1: Extract the value inside the brackets in the 'router' field
+    items.forEach(item => {
+        const match = item.router.match(/\[(.*?)\]/);
+        if (match) {
+            item.router = match[1];
+        }
+    });
+
+    // Step 2: Group by 'caf' and determine the most frequent 'router'
+    const cafGroups = items.reduce((acc, item) => {
+        if (!acc[item.caf]) {
+            acc[item.caf] = [];
+        }
+        acc[item.caf].push(item);
+        return acc;
+    }, {});
+
+    // Create the result array with the most frequent 'router' for each 'caf'
+    const result = Object.keys(cafGroups).map(caf => {
+        const routers = cafGroups[caf].map(item => item.router);
+        const routerCounts = routers.reduce((acc, router) => {
+            acc[router] = (acc[router] || 0) + 1;
+            return acc;
+        }, {});
+
+        const mostFrequentRouter = Object.keys(routerCounts).reduce((a, b) => routerCounts[a] > routerCounts[b] ? a : b);
+
+        return {
+            caf,
+            date: cafGroups[caf][0].date,
+            router: mostFrequentRouter
+        };
+    });
+
+    return result;
 }
 function calculateDaysDifference(date1, date2) {
     // Parse das datas do formato dd/mm/yyyy para objetos Date
